@@ -1,15 +1,5 @@
-"""
-from Cancao import Cancao
-from Artista import Artista
-from Album import Album
-from Playlisr import Playlist
-"""
-
 class Usuario:
-    # Pode tirar todos os atributos depois de ehADM
-    def __init__(self, nome, email, senha, bio, img_perfil, ehADM, historico_ouvidas=None, 
-                 cancoes_favoritas=None, lista_amigos=None, solicitacoes_amizade=None, artistas_favoritos=None, 
-                 albuns_favoritos=None, lista_playlists=None):
+    def __init__(self, nome, email, senha, bio, img_perfil, ehADM):
         self.nome = nome
         self.email = email
         self.senha = senha
@@ -51,25 +41,4 @@ class Usuario:
         if lista_playlists is None:
             lista_playlists = Playlist("","")
         self.lista_playlists = [lista_playlists]
-    
-    def adicionar_historico_ouvidas(self, cancao):
-        self.historico_ouvidas.append(cancao)
-
-    def adicionar_cancao_favorita(self, cancao):
-        self.cancoes_favoritas.append(cancao)
-
-    def adicionar_lista_amigos(self, usuario):
-        self.lista_amigos.append(usuario)
-
-    def adicionar_solicitacoes_amizade(self, usuario):
-        self.solicitacoes_amizade.append(usuario)
-    
-    def adicionar_artista_favorito(self, artista):
-        self.artistas_favoritos.append(artista)
-
-    def adicionar_album_favorito(self, album):
-        self.albuns_favoritos.append(album)
-
-    def adicionar_lista_playlists(self, playlist):
-        self.lista_playlists.append(playlist)
     """
