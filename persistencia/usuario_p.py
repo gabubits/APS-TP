@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from modelo.UsuarioM import Usuario
+from modelo.usuario import Usuario
 
 class UsuarioP():
 

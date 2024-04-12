@@ -1,4 +1,4 @@
-from Persistencia.UsuarioP import UsuarioP 
+from persistencia.usuario_p import UsuarioP
 
 class UsuarioControle():
 
