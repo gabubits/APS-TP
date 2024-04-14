@@ -1,19 +1,24 @@
+from PySide6.QtGui import QCloseEvent
 from .utils.tela_base import *
 
 from .tela_opcoes import TelaOpcoes
+from controle.usuario_controle import UsuarioControle
+from modelo.usuario import Usuario
 
 class TelaCadastro(TelaBase):
-    def __init__(self, parent: QWidget | None) -> None:
+    def __init__(self, parent: QWidget | None, usuario_controle: UsuarioControle) -> None:
         super().__init__(parent = parent,
                          titulo = "Streamy",
                          tamanho = QSize(600, 750))
         
+        self.usuario_controle = usuario_controle
+
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         barra_topo.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 20px;")
 
-        rotulo_boas_vindas = QLabel("Bem-vindo ao Streamy!")
+        rotulo_boas_vindas = QLabel("Olá novo Streamy!")
         fonte_bv = QFont(self.fonte_principal, 20)
         fonte_bv.setWeight(QFont.Weight.DemiBold)
         rotulo_boas_vindas.setFont(fonte_bv)
@@ -145,6 +150,7 @@ class TelaCadastro(TelaBase):
         self.botao_cadastrar.setStyleSheet(estilo_botao)
         self.botao_cadastrar.setFont(self.fonte_botao)
         self.botao_cadastrar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_cadastrar.clicked.connect(self.verificar_informacoes)
 
         form_cadastro_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         form_cadastro_layout.addWidget(rotulo_inicial, 0, 0, Qt.AlignmentFlag.AlignCenter)
@@ -170,7 +176,7 @@ class TelaCadastro(TelaBase):
         self.widget_central_layout.addLayout(fcl_ajuste, 1, 0, 1, 0, Qt.AlignmentFlag.AlignTop)
     
     def fechar_e_voltar(self):
-        self.close()
+        self.hide()
         self.parentWidget().show()
 
     def enviar_img(self):
@@ -194,36 +200,43 @@ class TelaCadastro(TelaBase):
         
         if emptyInputs:
             MessageBox(
+                self,
                 'Falha na autenticação!',
                 QMessageBox.Icon.Critical,
                 'Os campos obrigatórios não foram preenchidos:',
                 emptyInputs
             ).exec()
-
             return
         
-        if not ControleUsuario.buscar(self.entrada_email.text()):
+        if self.usuario_controle.buscar_email(self.entrada_email.text()):
             MessageBox(
+                self,
                 'Falha na autenticação!',
                 QMessageBox.Icon.Warning,
                 f'{self.entrada_email.text()}'
                 'já está registrado.'
                 'Por favor, escolha outro e-mail.'
             ).exec()
+            return
         
-        
-        MessageBox(f'Bem-vindo {self.entrada_nome.text()}',
+        novo_usuario = Usuario(
+            self.entrada_nome.text(),
+            self.entrada_email.text(),
+            self.entrada_senha.text(),
+            self.entrada_bio.toPlainText()
+        )
+
+        if len(self.entrada_foto.text()) != 0:
+            novo_usuario.img_perfil = self.entrada_foto.text()
+            
+        self.usuario_controle.inserir(novo_usuario)
+
+        MessageBox(self,
+                   f'Bem-vindo {self.entrada_nome.text()}',
                    QMessageBox.Icon.Information,
                    'Sua conta foi criada com sucesso.',
-                   'Você pode fazer o login agora.')\
-                   .exec()
-        
-        for _input in mandatoryInputs:
-            _input.setText("")
+                   'Você pode fazer o login agora.').exec()
 
-        for _input in optionalInputs:
-            _input.setText("")
-        
         self.fechar_e_voltar()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
@@ -233,3 +246,10 @@ class TelaCadastro(TelaBase):
         delta = QPoint(event.globalPos() - self.oldPos)
         self.move(self.x() + delta.x(), self.y() + delta.y())
         self.oldPos = event.globalPos()
+    
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.usuario_controle.atualizar_arquivo()
+    
+    def keyReleaseEvent(self, event) -> None:
+        if event.key() == Qt.Key.Key_Return:
+            self.verificar_informacoes()

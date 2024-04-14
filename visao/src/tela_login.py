@@ -1,19 +1,23 @@
+from PySide6.QtGui import QCloseEvent, QKeyEvent
 from .tela_cadastro import TelaCadastro
 from .tela_opcoes import TelaOpcoes
 from .utils.tela_base import *
+from controle.usuario_controle import UsuarioControle
 
 class TelaLogin(TelaBase):
     def __init__(self):
         super().__init__(parent = None, 
                          titulo = 'Streamy', 
                          tamanho = QSize(600, 650))
+        
+        self.usuario_controle = UsuarioControle()
 
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         barra_topo.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 20px;")
 
-        rotulo_boas_vindas = QLabel("Welcome to Streamy!")
+        rotulo_boas_vindas = QLabel("Bem-vindo ao Streamy!")
         fonte_bv = QFont(self.fonte_principal, 20)
         fonte_bv.setWeight(QFont.Weight.DemiBold)
         rotulo_boas_vindas.setFont(fonte_bv)
@@ -59,7 +63,7 @@ class TelaLogin(TelaBase):
         rotulo_login.setFont(fonte_rotulo_l)
         rotulo_login.setContentsMargins(0, 40, 0, 40)
 
-        rotulo_email = QLabel("E-mail Address")
+        rotulo_email = QLabel("Endereço de e-mail")
         rotulo_email.setFont(self.fonte_rotulo)
 
         self.entrada_email = QLineEdit()
@@ -67,7 +71,7 @@ class TelaLogin(TelaBase):
         self.entrada_email.setStyleSheet("border-radius: 5px; background-color: rgb(18, 18, 18); border: 1px solid grey")
         self.entrada_email.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        rotulo_senha = QLabel("Password")
+        rotulo_senha = QLabel("Senha")
         rotulo_senha.setFont(self.fonte_rotulo)
         rotulo_senha.setContentsMargins(0, 30, 0, 0)
 
@@ -79,23 +83,23 @@ class TelaLogin(TelaBase):
         
         estilo_botao = "background-color: white; border-radius: 25px; color: black"
 
-        self.botao_logar = QPushButton("Sign In")
+        self.botao_logar = QPushButton("Entrar")
         self.botao_logar.setFixedSize(125, 50)
         self.botao_logar.setStyleSheet(estilo_botao)
         self.botao_logar.setFont(self.fonte_botao)
         self.botao_logar.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.botao_logar.clicked.connect(self.openOptionsWindow)
+        self.botao_logar.clicked.connect(self.verificacao_login)
 
-        rotulo_cadastrar = QLabel("Don't have an account?")
+        rotulo_cadastrar = QLabel("Não tem uma conta? Crie agora!")
         rotulo_cadastrar.setFont(self.fonte_rotulo)
         rotulo_cadastrar.setContentsMargins(0, 50, 0, 0)
 
-        self.botao_cadastrar = QPushButton("Create Account")
+        self.botao_cadastrar = QPushButton("Criar conta")
         self.botao_cadastrar.setFixedSize(150, 50)
         self.botao_cadastrar.setStyleSheet(estilo_botao)
         self.botao_cadastrar.setFont(self.fonte_botao)
         self.botao_cadastrar.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.botao_cadastrar.clicked.connect(self.openSignUpPage)
+        self.botao_cadastrar.clicked.connect(self.abrir_tela_cadastro)
         
         form_login_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         form_login_layout.addWidget(rotulo_login, 0, 0, Qt.AlignmentFlag.AlignCenter)
@@ -115,37 +119,44 @@ class TelaLogin(TelaBase):
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignTop)
         self.widget_central_layout.addLayout(fll_ajuste, 1, 0, 1, 0, Qt.AlignmentFlag.AlignTop)
     
-    def openSignUpPage(self):
-        TelaCadastro(self).show()
+    def abrir_tela_cadastro(self):
+        TelaCadastro(self, self.usuario_controle).show()
         self.hide()
     
-    def openOptionsWindow(self, info_usuario):
-        TelaOpcoes(self, info_usuario).show()
+    def abrir_tela_ops(self, info_usuario):
+        TelaOpcoes(self, info_usuario, self.usuario_controle).show()
         self.hide()
     
-    def signInVerification(self):
+    def verificacao_login(self):
         inputtedEmail = self.entrada_email.text()
-        userInfo = ControleUsuario.buscar(inputtedEmail.rstrip())
+        userInfo = self.usuario_controle.buscar_email(inputtedEmail.rstrip())
         if not userInfo:
             errorMessage = QMessageBox(self)
+            errorMessage.setIcon(QMessageBox.Icon.Critical)
+            errorMessage.setWindowTitle("Falha na autenticação!")
+            errorMessage.setStandardButtons(QMessageBox.StandardButton.Ok)
+            errorMessage.setText(f"{inputtedEmail} não está cadastrado no sistema!")
             self.entrada_email.setText("")
-            errorMessage.setIcon(QMessageBox.Icon.Critical)
-            errorMessage.setWindowTitle("Authentication Failed!")
-            errorMessage.setStandardButtons(QMessageBox.StandardButton.Ok)
-            errorMessage.setText(f"{userInfo.email} is not signed up. Please, sign up!")
             errorMessage.exec()
             return
         
-        if userInfo.password != self.entrada_senha.text():
+        if userInfo[0].senha != self.entrada_senha.text():
             errorMessage = QMessageBox(self)
-            self.entrada_senha.setText("")
             errorMessage.setIcon(QMessageBox.Icon.Critical)
-            errorMessage.setWindowTitle("Authentication Failed!")
+            errorMessage.setWindowTitle("Falha na autenticação!")
             errorMessage.setStandardButtons(QMessageBox.StandardButton.Ok)
-            errorMessage.setText(f"Your password is incorrect!")
+            errorMessage.setText(f"Sua senha está incorreta!")
+            self.entrada_senha.setText("")
             errorMessage.exec()
             return
         
-        self.openOptionsWindow(userInfo.name)
+        self.abrir_tela_ops(userInfo[0])
     
     def centralizarTela(self) -> None: return
+    
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.usuario_controle.atualizar_arquivo()
+    
+    def keyReleaseEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Return:
+            self.verificacao_login()

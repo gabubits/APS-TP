@@ -4,13 +4,19 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 
 class MessageBox(QMessageBox):
-    def __init__(self, 
+    def __init__(self,
+                 parent,
                  window_title: str,
                  icon: QIcon, 
                  *args) -> None:
-        super().__init__()
+        super().__init__(parent = parent)
 
         self.setIcon(icon)
         self.setWindowTitle(window_title)
         self.setStandardButtons(QMessageBox.StandardButton.Ok)
-        self.setText('\n'.join(args))
+        text = ""
+        for arg in args:
+            if type(arg) == list:
+                text += '\n'.join(arg)
+            else: text += arg + '\n'
+        self.setText(text)

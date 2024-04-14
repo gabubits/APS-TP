@@ -1,6 +1,5 @@
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QApplication
 from visao.src.tela_login import TelaLogin
-from persistencia.usuario_p import UsuarioP
 
 import sys
 

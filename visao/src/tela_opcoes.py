@@ -1,21 +1,23 @@
 from .utils.tela_base import *
 from .tela_principal import TelaPrincipal
+from controle.usuario_controle import UsuarioControle
+from modelo.usuario import Usuario
 
 class TelaOpcoes(TelaBase):
-    def __init__(self, parent: QWidget | None, info_usuario) -> None:
+    def __init__(self, parent: QWidget | None, info_usuario: Usuario, usuario_controle: UsuarioControle) -> None:
         super().__init__(parent = parent, 
                          titulo = 'Streamy', 
                          tamanho = QSize(1500, 900))
 
         self.info_usuario = info_usuario
+        self.usuario_controle = usuario_controle
 
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         barra_topo.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 20px;")
 
-        #rotulo_boas_vindas = QLabel(f"Hey {info_usuario.nome}!")
-        rotulo_boas_vindas = QLabel(f"Hey User!")
+        rotulo_boas_vindas = QLabel(f"Hey {self.info_usuario.nome}!")
         fonte_bv = QFont(self.fonte_principal, 20)
         fonte_bv.setWeight(QFont.Weight.DemiBold)
         rotulo_boas_vindas.setFont(fonte_bv)
@@ -46,7 +48,7 @@ class TelaOpcoes(TelaBase):
 
         botao_ver_perfil = QPushButton()
         botao_ver_perfil.setCursor(Qt.CursorShape.PointingHandCursor)
-        img_perfil = QPixmap(pathlib.Path("visao/src/img/teste.jpg").resolve())
+        img_perfil = QPixmap(pathlib.Path(self.info_usuario.img_perfil).resolve())
         icon_perfil = QIcon(img_perfil)
         botao_ver_perfil.setIcon(icon_perfil)
         botao_ver_perfil.setIconSize(QSize(35, 35))
@@ -63,11 +65,11 @@ class TelaOpcoes(TelaBase):
         menu_opcoes.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
         self.setContentsMargins(0, 0, 0, 80)
 
-        botao_usuarios = QPushButton("View Users")
-        botao_cancoes = QPushButton("View Songs")
-        botao_albuns = QPushButton("View Albums")
-        botao_playlists = QPushButton("View Playlists")
-        botao_artistas = QPushButton("View Artists")
+        botao_usuarios = QPushButton("Ver Users")
+        botao_cancoes = QPushButton("Ver Songs")
+        botao_albuns = QPushButton("Ver Albums")
+        botao_playlists = QPushButton("Ver Playlists")
+        botao_artistas = QPushButton("Ver Artists")
 
         self.fonte_botao.setPointSize(20)
 
@@ -81,12 +83,18 @@ class TelaOpcoes(TelaBase):
             botao.setFont(self.fonte_botao)
             botao.setStyleSheet("background-color: rgba(255,255,255,0.9); color: black; border-radius: 25px;")
             menu_ops_layout.addWidget(botao, i, 0, Qt.AlignmentFlag.AlignCenter)
-            botao.clicked.connect(lambda: self.abrir_tela(i))
+        
+        botao_usuarios.clicked.connect(lambda: self.abrir_tela(0))
+        botao_cancoes.clicked.connect(lambda: self.abrir_tela(1))
+        botao_albuns.clicked.connect(lambda: self.abrir_tela(2))
+        botao_playlists.clicked.connect(lambda: self.abrir_tela(3))
+        botao_artistas.clicked.connect(lambda: self.abrir_tela(4))
 
-        botao_sair = QPushButton("Sign Out")
+        botao_sair = QPushButton("Sair")
         botao_sair.setFixedSize(150, 50)
         botao_sair.setStyleSheet("background-color: white; border-radius: 25px; color: black")
         botao_sair.setCursor(Qt.CursorShape.PointingHandCursor)
+        botao_sair.setFont(self.fonte_botao)
         botao_sair.clicked.connect(self.abrir_tela_login)
 
         self.fonte_botao.setPointSize(15)
@@ -102,11 +110,11 @@ class TelaOpcoes(TelaBase):
         sys.exit()
     
     def abrir_tela(self, indice_pagina: int):
-        print(indice_pagina)
         TelaPrincipal(parent = self.parentWidget(), 
-                      op_padrao=indice_pagina).show()
+                      op_padrao=indice_pagina,
+                      usuario_controle=self.usuario_controle,
+                      info_usuario=self.info_usuario).show()
         self.hide()
     
     def abrir_tela_login(self):
         self.parentWidget().show()
-        self.hide()

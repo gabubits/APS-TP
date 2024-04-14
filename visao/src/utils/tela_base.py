@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (
     QWidget, QFrame, QSizePolicy, QLabel, QMainWindow,
     QPushButton, QHBoxLayout, QGridLayout, QLineEdit,
     QVBoxLayout, QApplication, QTextEdit, QFileDialog,
-    QMessageBox)
+    QMessageBox, QListWidget)
 
 from PySide6.QtCore import (
     Qt, QSize, QPoint, qAbs)

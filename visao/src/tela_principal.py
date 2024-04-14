@@ -1,13 +1,21 @@
 
+from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QStackedWidget
 from .utils.tela_base import *
-from .utils.entrada_pesquisa import *
+
+from controle.usuario_controle import UsuarioControle
+from modelo.usuario import Usuario
 
 class TelaPrincipal(TelaBase):
-    def __init__(self, parent: QWidget | None, op_padrao: int = 0) -> None:
+    def __init__(self, parent: QWidget | None, op_padrao: int, usuario_controle: UsuarioControle, info_usuario: Usuario) -> None:
         super().__init__(parent = parent, 
                          titulo = "Streamy", 
                          tamanho = QSize(1500, 900))
+
+
+        self.info_usuario = info_usuario
+        self.usuario_controle = usuario_controle
+        self.resultados_pesquisa = self.usuario_controle.getUsuarios()
 
         tela_largura = 1500
         tela_altura = 900
@@ -25,7 +33,7 @@ class TelaPrincipal(TelaBase):
         botao_fechar.setIcon(icon_fechar)
         botao_fechar.setIconSize(QSize(25,25))
         botao_fechar.setMaximumSize(QSize(25,25))
-        botao_fechar.clicked.connect(self.close)
+        botao_fechar.clicked.connect(self.sair)
 
         botao_minimizar = QPushButton()
         botao_minimizar.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -74,11 +82,10 @@ class TelaPrincipal(TelaBase):
         
         botao_ver_perfil = QPushButton()
         botao_ver_perfil.setCursor(Qt.CursorShape.PointingHandCursor)
-        img_perfil = QPixmap(pathlib.Path("visao/src/img/teste.jpg").resolve())
+        img_perfil = QPixmap(pathlib.Path(self.info_usuario.img_perfil).resolve())
         icon_perfil = QIcon(img_perfil)
         botao_ver_perfil.setIcon(icon_perfil)
         botao_ver_perfil.setIconSize(QSize(25,25))
-        #botao_ver_perfil.clicked.connect(self.showMinimized)
 
         barra_topo_layout.addWidget(botao_ver_perfil, 0, len(botoes) + 1, Qt.AlignmentFlag.AlignCenter)
         barra_topo_layout.addLayout(botoes_layout, 0, len(botoes) + 2, Qt.AlignmentFlag.AlignRight)
@@ -92,66 +99,126 @@ class TelaPrincipal(TelaBase):
         pagina_usuarios = QWidget()
         pu_layout = QGridLayout(pagina_usuarios)
 
-        pu_pesquisa = CaixaPesquisa()
-        pu_pesquisa.setFixedSize(380, 30)
-        pu_pesquisa.setStyleSheet("border-radius: 5px; background-color: rgb(18, 18, 18); border: 1px solid grey")
-        pu_pesquisa.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        pu_pesquisa.setFont(self.fonte_entrada)
+        if self.info_usuario.eh_adm:
+            pu_pesquisa = QLineEdit()
+            pu_pesquisa.setFixedSize(380, 30)
+            pu_pesquisa.setStyleSheet("border-radius: 5px; background-color: rgb(18, 18, 18); border: 1px solid grey")
+            pu_pesquisa.setAlignment(Qt.AlignmentFlag.AlignLeft)
+            pu_pesquisa.setPlaceholderText("Digite o nome do usuário ou o e-mail")
+            pu_pesquisa.setFont(self.fonte_entrada)
+
+            pu_lista = QListWidget()
+            pu_lista.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in usuario_controle.getUsuarios()])
+            pu_lista.setStyleSheet("border-radius: 5px; background-color: rgb(18, 18, 18); border: 1px solid grey")
+            self.fonte_entrada.setPointSize(20)
+            pu_lista.setFont(self.fonte_entrada)
+            pu_lista.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
+
+            pu_pesquisa.returnPressed.connect(lambda: self.pesquisar_usuario(pu_pesquisa.text(), pu_lista))
         
-        pu_botao_remover = QPushButton("Remover usuario")
-        pu_botao_remover.setFixedSize(170, 50)
-        pu_botao_remover.setStyleSheet("background-color: red; border-radius: 25px; color: white")
-        pu_botao_remover.setCursor(Qt.CursorShape.PointingHandCursor)
-        pu_botao_remover.setFont(self.fonte_botao)
+            pu_botao_remover = QPushButton("Remover usuario")
+            pu_botao_remover.setFixedSize(170, 50)
+            pu_botao_remover.setStyleSheet("background-color: red; border-radius: 25px; color: white")
+            pu_botao_remover.setCursor(Qt.CursorShape.PointingHandCursor)
+            pu_botao_remover.setFont(self.fonte_botao)
+            pu_botao_remover.clicked.connect(lambda: self.remover_usuarios(pu_lista))
 
-        pu_botao_adm = QPushButton("Promover a ADM")
-        pu_botao_adm.setFixedSize(170, 50)
-        pu_botao_adm.setStyleSheet("background-color: blue; border-radius: 25px; color: white")
-        pu_botao_adm.setCursor(Qt.CursorShape.PointingHandCursor)
-        pu_botao_adm.setFont(self.fonte_botao)
+            pu_botao_adm = QPushButton("Promover a ADM")
+            pu_botao_adm.setFixedSize(170, 50)
+            pu_botao_adm.setStyleSheet("background-color: blue; border-radius: 25px; color: white")
+            pu_botao_adm.setCursor(Qt.CursorShape.PointingHandCursor)
+            pu_botao_adm.setFont(self.fonte_botao)
+            pu_botao_adm.clicked.connect(lambda: self.promover_adm(pu_lista))
 
-        pu_botoes_layout = QGridLayout()
-        pu_botoes_layout.addWidget(pu_botao_remover, 0, 0, Qt.AlignmentFlag.AlignCenter)
-        pu_botoes_layout.addWidget(pu_botao_adm, 0, 1, Qt.AlignmentFlag.AlignCenter)
+            pu_botoes_layout = QGridLayout()
+            pu_botoes_layout.addWidget(pu_botao_remover, 0, 0, Qt.AlignmentFlag.AlignCenter)
+            pu_botoes_layout.addWidget(pu_botao_adm, 0, 1, Qt.AlignmentFlag.AlignCenter)
 
-        pu_layout.addWidget(pu_pesquisa, 0, 0, Qt.AlignmentFlag.AlignTop)
-        pu_layout.addLayout(pu_botoes_layout, 1, 0, Qt.AlignmentFlag.AlignBottom)
+            pu_layout.setSpacing(10)
+            pu_layout.addWidget(pu_pesquisa, 0, 0, Qt.AlignmentFlag.AlignCenter)
+            pu_layout.addWidget(pu_lista, 1, 0)
+            pu_layout.addLayout(pu_botoes_layout, 2, 0, Qt.AlignmentFlag.AlignBottom)
+        else:
+            rotulo_usuarios = QLabel("Usuarios")
+            rotulo_usuarios.setFont(self.fonte_rotulo)
+            pu_layout.addWidget(rotulo_usuarios, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
         self.pilha_paginas.addWidget(pagina_usuarios)
         botao_usuarios.clicked.connect(lambda: self.changePage(0))
 
         pagina_cancoes = QWidget()
         pc_layout = QGridLayout(pagina_cancoes)
-        rotulo_cancoes = QLabel("Songs list")
-        rotulo_cancoes.setFont(self.fonte_rotulo)
-        pc_layout.addWidget(rotulo_cancoes, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
+        if self.info_usuario.eh_adm:
+            rotulo_cancoes = QLabel("Canções (ADM)")
+            rotulo_cancoes.setFont(self.fonte_rotulo)
+            pc_layout.addWidget(rotulo_cancoes, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        else:
+            rotulo_cancoes = QLabel("Canções")
+            rotulo_cancoes.setFont(self.fonte_rotulo)
+            pc_layout.addWidget(rotulo_cancoes, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
         self.pilha_paginas.addWidget(pagina_cancoes)
         botao_cancoes.clicked.connect(lambda: self.changePage(1))
 
         pagina_albuns = QWidget()
         pal_layout = QGridLayout(pagina_albuns)
-        rotulo_albuns = QLabel("Albums list")
-        rotulo_albuns.setFont(self.fonte_rotulo)
-        pal_layout.addWidget(rotulo_albuns, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
+        if self.info_usuario.eh_adm:
+            rotulo_albuns = QLabel("Albuns (ADM)")
+            rotulo_albuns.setFont(self.fonte_rotulo)
+            pal_layout.addWidget(rotulo_albuns, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        else:
+            rotulo_albuns = QLabel("Albuns")
+            rotulo_albuns.setFont(self.fonte_rotulo)
+            pal_layout.addWidget(rotulo_albuns, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
         self.pilha_paginas.addWidget(pagina_albuns)
         botao_albuns.clicked.connect(lambda: self.changePage(2))
 
         pagina_playlists = QWidget()
         pp_layout = QGridLayout(pagina_playlists)
-        rotulo_playlists = QLabel("Playlists list")
-        rotulo_playlists.setFont(self.fonte_rotulo)
-        pp_layout.addWidget(rotulo_playlists, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
+        if self.info_usuario.eh_adm:
+            rotulo_playlists = QLabel("Playlists (ADM)")
+            rotulo_playlists.setFont(self.fonte_rotulo)
+            pp_layout.addWidget(rotulo_playlists, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        else:
+            rotulo_playlists = QLabel("Playlists")
+            rotulo_playlists.setFont(self.fonte_rotulo)
+            pp_layout.addWidget(rotulo_playlists, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
         self.pilha_paginas.addWidget(pagina_playlists)
         botao_playlists.clicked.connect(lambda: self.changePage(3))
 
         pagina_artistas = QWidget()
         par_layout = QGridLayout(pagina_artistas)
-        rotulo_artistas = QLabel("Artists list")
-        rotulo_artistas.setFont(self.fonte_rotulo)
-        par_layout.addWidget(rotulo_artistas, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
+        if self.info_usuario.eh_adm:
+            rotulo_artistas = QLabel("Artistas (ADM)")
+            rotulo_artistas.setFont(self.fonte_rotulo)
+            par_layout.addWidget(rotulo_artistas, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        else:
+            rotulo_artistas = QLabel("Artistas")
+            rotulo_artistas.setFont(self.fonte_rotulo)
+            par_layout.addWidget(rotulo_artistas, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
         self.pilha_paginas.addWidget(pagina_artistas)
         botao_artistas.clicked.connect(lambda: self.changePage(4))
 
-        self.pilha_paginas.setCurrentIndex(0)
+        pagina_perfil = QWidget()
+        pp_layout = QGridLayout(pagina_perfil)
+        botao_sair = QPushButton("Sair")
+        botao_sair.setFixedSize(150, 50)
+        botao_sair.setStyleSheet("background-color: white; border-radius: 25px; color: black")
+        botao_sair.setCursor(Qt.CursorShape.PointingHandCursor)
+        botao_sair.setFont(self.fonte_botao)
+        botao_sair.clicked.connect(self.sair)
+        pp_layout.addWidget(botao_sair, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        self.pilha_paginas.addWidget(pagina_perfil)
+        botao_ver_perfil.clicked.connect(lambda: self.changePage(5))
+
+        self.pilha_paginas.setCurrentIndex(op_padrao)
         
         pagina_tocando = QWidget()
         pagina_tocando.setMinimumSize(tela_largura/4, tela_altura - 90)
@@ -185,3 +252,39 @@ class TelaPrincipal(TelaBase):
         if self.pilha_paginas.currentIndex() == index: return
         self.adc_historico()
         self.pilha_paginas.setCurrentIndex(index)
+    
+    def pesquisar_usuario(self, texto: str, list_widget: QListWidget):
+        if not list_widget: list_widget.clear()
+        if len(texto.rstrip()) == 0:
+            resultado = self.usuario_controle.getUsuarios()
+        else:
+            resultado = self.usuario_controle.buscar_nome(texto)
+            if resultado:
+                list_widget.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in resultado])
+            else:
+                resultado = self.usuario_controle.buscar_email(texto)
+                if resultado:
+                    list_widget.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in resultado])
+        
+        self.resultados_pesquisa = resultado
+
+    def promover_adm(self, list_widget: QListWidget):
+        indices = [indice.row() for indice in list_widget.selectionModel().selectedIndexes()]
+        for indice in indices:
+            if self.resultados_pesquisa[indice].email == self.info_usuario.email: pass
+            else:
+                self.usuario_controle.alterar_adm(self.resultados_pesquisa[indice])
+
+    def remover_usuarios(self, list_widget: QListWidget):
+        indices = [indice.row() for indice in list_widget.selectionModel().selectedIndexes()]
+        for indice in indices:
+            if self.resultados_pesquisa[indice].email == self.info_usuario.email: pass
+            else:
+                self.usuario_controle.excluir(self.resultados_pesquisa[indice])
+                item = list_widget.takeItem(indice)
+                del item
+
+    def sair(self):
+        self.usuario_controle.atualizar_arquivo()
+        self.close()
+        self.parentWidget().show()
