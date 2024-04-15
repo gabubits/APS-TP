@@ -254,18 +254,15 @@ class TelaPrincipal(TelaBase):
         self.pilha_paginas.setCurrentIndex(index)
     
     def pesquisar_usuario(self, texto: str, list_widget: QListWidget):
-        if not list_widget: list_widget.clear()
+        list_widget.clear()
         if len(texto.rstrip()) == 0:
             resultado = self.usuario_controle.getUsuarios()
         else:
             resultado = self.usuario_controle.buscar_nome(texto)
-            if resultado:
-                list_widget.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in resultado])
-            else:
+            if not resultado:
                 resultado = self.usuario_controle.buscar_email(texto)
-                if resultado:
-                    list_widget.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in resultado])
         
+        list_widget.addItems([f'{usuario.nome} <{usuario.email}>' for usuario in resultado])
         self.resultados_pesquisa = resultado
 
     def promover_adm(self, list_widget: QListWidget):
