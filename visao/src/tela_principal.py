@@ -59,11 +59,11 @@ class TelaPrincipal(TelaBase):
         botoes_layout.addWidget(botao_minimizar)
         botoes_layout.addWidget(botao_fechar)
 
-        botao_usuarios = QPushButton("Users")
-        botao_cancoes = QPushButton("Songs")
-        botao_albuns = QPushButton("Albums")
+        botao_usuarios = QPushButton("Usuários")
+        botao_cancoes = QPushButton("Canções")
+        botao_albuns = QPushButton("Álbuns")
         botao_playlists = QPushButton("Playlists")
-        botao_artistas = QPushButton("Artists")
+        botao_artistas = QPushButton("Artistas")
 
         self.fonte_botao.setPointSize(15)
 
@@ -226,7 +226,7 @@ class TelaPrincipal(TelaBase):
 
         pagina_tocando_layout = QGridLayout(pagina_tocando)
 
-        nowPlayingLabel = QLabel("Now Playing Screen")
+        nowPlayingLabel = QLabel("Tocando agora (tela)")
         nowPlayingLabel.setWordWrap(True)
         nowPlayingLabel.setFont(self.fonte_rotulo)
 

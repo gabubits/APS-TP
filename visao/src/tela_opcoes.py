@@ -65,11 +65,11 @@ class TelaOpcoes(TelaBase):
         menu_opcoes.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
         self.setContentsMargins(0, 0, 0, 80)
 
-        botao_usuarios = QPushButton("Ver Users")
-        botao_cancoes = QPushButton("Ver Songs")
-        botao_albuns = QPushButton("Ver Albums")
+        botao_usuarios = QPushButton("Ver Usuários")
+        botao_cancoes = QPushButton("Ver Canções")
+        botao_albuns = QPushButton("Ver Álbuns")
         botao_playlists = QPushButton("Ver Playlists")
-        botao_artistas = QPushButton("Ver Artists")
+        botao_artistas = QPushButton("Ver Artistas")
 
         self.fonte_botao.setPointSize(20)
 
