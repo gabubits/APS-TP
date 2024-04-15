@@ -120,6 +120,8 @@ class TelaLogin(TelaBase):
         self.widget_central_layout.addLayout(fll_ajuste, 1, 0, 1, 0, Qt.AlignmentFlag.AlignTop)
     
     def abrir_tela_cadastro(self):
+        self.entrada_email.setText("")
+        self.entrada_senha.setText("")
         TelaCadastro(self, self.usuario_controle).show()
         self.hide()
     
@@ -135,7 +137,10 @@ class TelaLogin(TelaBase):
             errorMessage.setIcon(QMessageBox.Icon.Critical)
             errorMessage.setWindowTitle("Falha na autenticação!")
             errorMessage.setStandardButtons(QMessageBox.StandardButton.Ok)
-            errorMessage.setText(f"{inputtedEmail} não está cadastrado no sistema!")
+            if len(inputtedEmail) != 0:
+                errorMessage.setText(f"{inputtedEmail} não está cadastrado no sistema!")
+            else:
+                errorMessage.setText(f"Preencha os campos de cadastro!")
             self.entrada_email.setText("")
             errorMessage.exec()
             return

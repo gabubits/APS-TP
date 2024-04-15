@@ -118,3 +118,4 @@ class TelaOpcoes(TelaBase):
     
     def abrir_tela_login(self):
         self.parentWidget().show()
+        self.hide()
