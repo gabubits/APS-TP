@@ -49,13 +49,22 @@ class TelaBase(QMainWindow):
 
         self.oldPos = self.pos()
 
-    def mousePressEvent(self, event: QMouseEvent) -> None:
-        self.oldPos = event.globalPos()
-    
-    def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        delta = QPoint(event.globalPos() - self.oldPos)
-        self.move(self.x() + delta.x(), self.y() + delta.y())
-        self.oldPos = event.globalPos()
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.offset = QPoint(event.position().x(),event.position().y())
+        else:
+            super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if self.offset is not None and event.buttons() == Qt.LeftButton:
+
+            self.move(self.pos() + QPoint(event.scenePosition().x(),event.scenePosition().y()) - self.offset)
+        else:
+            super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.offset = None
+        super().mouseReleaseEvent(event)
     
     def centralizarTela(self) -> None:
         center = QScreen.availableGeometry(QApplication.primaryScreen()).center()
