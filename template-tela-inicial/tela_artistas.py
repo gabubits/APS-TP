@@ -29,7 +29,7 @@ class TelaArtistas(QWidget):
         caixa_pesquisa = QLineEdit()
         caixa_pesquisa.setFixedSize(380, 30)
         caixa_pesquisa.setStyleSheet(
-            "border-radius: 5px;" +
+            "border-radius: 15px;" +
             "background-color: rgb(18, 18, 18);" +
             "border: 1px solid grey"
         )
@@ -44,7 +44,7 @@ class TelaArtistas(QWidget):
         botao_pesquisar.setStyleSheet(
             "background-color: rgba(255,255,255,0.9);" +
             "color: black;" +
-            "border-radius: 10px;"
+            "border-radius: 15px;"
         )
 
         lista = QListWidget()
