@@ -16,6 +16,7 @@ class TelaPrincipal(TelaBase):
         self.info_usuario = info_usuario
         self.usuario_controle = usuario_controle
         self.resultados_pesquisa = self.usuario_controle.getUsuarios()
+        self.modo = 0
 
         tela_largura = 1500
         tela_altura = 900
