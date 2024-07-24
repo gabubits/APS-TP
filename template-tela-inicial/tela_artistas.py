@@ -11,20 +11,46 @@ from typing import Dict
 
 class Artista:
     def __init__(self) -> None:
-        self.nome = None
-        self.bio = None
-        self.img_perfil = None
-        self.nacionalidade = None
-        self.comentario = None
+        self.nome = 'Artista'
+        self.bio = ''
+        self.img_perfil = ''
+        self.nacionalidade = 'Brasileira'
+        self.comentario = 'Digite seu comentario'
         self.artista_id = None
         self.albuns = []
+    
+    def add_album(self, album):
+        self.albuns.append(album)
+    
+    def rem_album(self, album):
+        self.albuns.remove(album)
 
+    def to_dict(self):
+        return {
+            'nome': self.nome,
+            'bio': self.bio,
+            'img_perfil': self.img_perfil,
+            'nacionalidade': self.nacionalidade,
+            'comentario': self.comentario,
+            'artista_id': self.artista_id,
+            'albuns': []
+            # 'albuns': [album.to_dict() for album in self.albuns]
+        }
+    
+    def __repr__(self) -> str:
+        return f'{self.nome}'
+
+    def __str__(self) -> str:
+        return f'{self.nome} - {self.nacionalidade} ({len(self.albuns)} álbuns)'
+    
 class TelaArtistas(QWidget):
 
     def __init__(self,
                  fontes: Dict[str, QFont]) -> None:
         super().__init__()
         layout = QGridLayout(self)
+
+        artista = Artista()
 
         caixa_pesquisa = QLineEdit()
         caixa_pesquisa.setFixedSize(380, 30)
@@ -56,7 +82,7 @@ class TelaArtistas(QWidget):
         print(fontes["lista"])
         lista.setFont(fontes["lista"])
         lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        lista.addItems(['Sevdaliza', 'Kelela', 'Cecile Believe'])
+        lista.addItems([artista.__str__()])
 
         layout_pesquisa = QGridLayout()
         layout_pesquisa.addWidget(caixa_pesquisa, 0, 0, Qt.AlignmentFlag.AlignTop)
