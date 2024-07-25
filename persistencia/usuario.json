@@ -1,0 +1,199 @@
+[
+    {
+        "usuario_id": 0,
+        "username": "aa",
+        "senha": "aa",
+        "nome": "aa",
+        "img_perfil": "aa",
+        "colecao": [
+            {
+                "nome": "aaa",
+                "bio": "aaa",
+                "img_perfil": "aaa",
+                "nacionalidade": "aaa",
+                "comentario": "aaa",
+                "artista_id": 0,
+                "albuns": [
+                    {
+                        "nome": "aaa",
+                        "descricao": "aaaaa",
+                        "img_capa": "aaaa",
+                        "lancamento_ano": "aaa",
+                        "lancamento_dia": "aaa",
+                        "lancamento_mes": "aaaa",
+                        "adicao_ano": "aaaaa",
+                        "adicao_dia": "aaaa",
+                        "adicao_mes": "aaaa",
+                        "type": "aaaa",
+                        "comentario": "aaaa",
+                        "artistas": [
+                            "atum",
+                            "sardinha"
+                        ],
+                        "album_id": 0,
+                        "cancoes": [
+                            {
+                                "titulo": "aaaa",
+                                "artistas": "aaa",
+                                "genero": "aaa",
+                                "album": "aaa",
+                                "diretorio_audio": "aaa",
+                                "lancamento_ano": "aaa",
+                                "lancamento_dia": "aaa",
+                                "lancamento_mes": "aaa",
+                                "adicao_ano": "aaa",
+                                "adicao_dia": "aaaa",
+                                "adicao_mes": "aaa",
+                                "comentario": "aaaa",
+                                "cancao_id": 0,
+                                "reproducoes": [
+                                    {
+                                        "hora": "1",
+                                        "minuto": "1",
+                                        "segundo": "1",
+                                        "dia": "1",
+                                        "mes": "1",
+                                        "ano": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "nome": "ccc",
+                "bio": "ccc",
+                "img_perfil": "ccc",
+                "nacionalidade": "ccc",
+                "comentario": "ccc",
+                "artista_id": 1,
+                "albuns": [
+                    {
+                        "nome": "dddd",
+                        "descricao": "dddd",
+                        "img_capa": "dddd",
+                        "lancamento_ano": "dddd",
+                        "lancamento_dia": "dddd",
+                        "lancamento_mes": "dddd",
+                        "adicao_ano": "dddd",
+                        "adicao_dia": "dddd",
+                        "adicao_mes": "dddd",
+                        "type": "dddd",
+                        "comentario": "dddd",
+                        "artistas": [
+                            "dddd",
+                            "dddd"
+                        ],
+                        "album_id": 2,
+                        "cancoes": []
+                    }
+                ]
+            }
+        ],
+        "playlists": [
+            {
+                "nome": "p",
+                "descricao": "p",
+                "img_capa": "p",
+                "data_criacao": "p",
+                "data_ultima_modif": "p",
+                "comentario": "p",
+                "playlist_id": 0,
+                "cancoes_playlist": [
+                    {
+                        "artista_id": 0,
+                        "album_id": 0,
+                        "cancao_id": 0
+                    }
+                ]
+            },
+            {
+                "nome": "2",
+                "descricao": "20",
+                "img_capa": "2",
+                "data_criacao": "2",
+                "data_ultima_modif": "2",
+                "comentario": "2",
+                "playlist_id": 1,
+                "cancoes_playlist": [
+                    {
+                        "artista_id": 1,
+                        "album_id": 1,
+                        "cancao_id": 1
+                    },
+                    {
+                        "artista_id": 2,
+                        "album_id": 2,
+                        "cancao_id": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "usuario_id": 1,
+        "username": "bb",
+        "senha": "bb",
+        "nome": "bb",
+        "img_perfil": "bb",
+        "colecao": [
+            {
+                "nome": "aaa",
+                "bio": "aaa",
+                "img_perfil": "aaa",
+                "nacionalidade": "aaa",
+                "comentario": "aaa",
+                "artista_id": 0,
+                "albuns": [
+                    {
+                        "nome": "aaa",
+                        "descricao": "aaaaa",
+                        "img_capa": "aaaa",
+                        "lancamento_ano": "aaa",
+                        "lancamento_dia": "aaa",
+                        "lancamento_mes": "aaaa",
+                        "adicao_ano": "aaaaa",
+                        "adicao_dia": "aaaa",
+                        "adicao_mes": "aaaa",
+                        "type": "aaaa",
+                        "comentario": "aaaa",
+                        "artistas": [
+                            "atum",
+                            "sardinha"
+                        ],
+                        "album_id": 0,
+                        "cancoes": [
+                            {
+                                "titulo": "aaaa",
+                                "artistas": "aaa",
+                                "genero": "aaa",
+                                "album": "aaa",
+                                "diretorio_audio": "aaa",
+                                "lancamento_ano": "aaa",
+                                "lancamento_dia": "aaa",
+                                "lancamento_mes": "aaa",
+                                "adicao_ano": "aaa",
+                                "adicao_dia": "aaaa",
+                                "adicao_mes": "aaa",
+                                "comentario": "aaaa",
+                                "cancao_id": 0,
+                                "reproducoes": [
+                                    {
+                                        "hora": "1",
+                                        "minuto": "1",
+                                        "segundo": "1",
+                                        "dia": "1",
+                                        "mes": "1",
+                                        "ano": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "playlists": []
+    }
+]
