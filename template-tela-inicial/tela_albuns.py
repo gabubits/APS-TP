@@ -16,7 +16,7 @@ import sys
 class TelaBase(QMainWindow):
     def __init__(self, parent: QWidget | None,
                  titulo: str, tamanho: QSize) -> None:
-        super().__init__(parent=parent)
+        super().__init__(parent = parent)
 
         fonte_id = QFontDatabase.addApplicationFont(str(pathlib.Path("template-tela-inicial/SF-Pro.ttf").resolve()))
         if fonte_id < 0:
@@ -47,13 +47,13 @@ class TelaBase(QMainWindow):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.offset = QPoint(event.position().x(), event.position().y())
+            self.offset = QPoint(event.position().x(),event.position().y())
         else:
             super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.offset is not None and event.buttons() == Qt.LeftButton:
-            self.move(self.pos() + QPoint(event.scenePosition().x(), event.scenePosition().y()) - self.offset)
+            self.move(self.pos() + QPoint(event.scenePosition().x(),event.scenePosition().y()) - self.offset)
         else:
             super().mouseMoveEvent(event)
 
@@ -70,9 +70,9 @@ class TelaBase(QMainWindow):
 
 class TelaPrincipal(TelaBase):
     def __init__(self) -> None:
-        super().__init__(parent=None, 
-                         titulo="Streamy", 
-                         tamanho=QSize(1500, 900))
+        super().__init__(parent = None, 
+                         titulo = "Streamy", 
+                         tamanho = QSize(1500, 900))
 
         tela_largura = 1500
         tela_altura = 900
@@ -108,8 +108,8 @@ class TelaPrincipal(TelaBase):
 
         self.fonte_botao.setPointSize(15)
 
-        botoes = [botao_usuarios, botao_cancoes, botao_albuns, 
-                  botao_playlists, botao_artistas]
+        botoes = [botao_usuarios, botao_cancoes, botao_albuns, \
+                       botao_playlists, botao_artistas]
 
         barra_topo_layout = QGridLayout(barra_topo)
 
@@ -123,7 +123,7 @@ class TelaPrincipal(TelaBase):
         barra_topo_layout.addLayout(botoes_layout, 0, len(botoes) + 1, Qt.AlignmentFlag.AlignRight)
 
         self.pilha_paginas = QStackedWidget()
-        self.pilha_paginas.setMinimumSize(3 * (tela_largura / 4) - 50, tela_altura - 90)
+        self.pilha_paginas.setMinimumSize(3 * (tela_largura/4) - 50, tela_altura - 90)
         self.pilha_paginas.setStyleSheet("background-color: rgb(21,21,21); border-radius: 10px")
 
         self.fonte_rotulo.setPointSize(25)
@@ -133,21 +133,6 @@ class TelaPrincipal(TelaBase):
         layout = QGridLayout(pagina_modelo)
 
         # ------------ MODELAGEM COMEÇA AQUI -----------------------
-
-        # Caixa de pesquisa
-        self.caixa_pesquisa = QLineEdit()
-        self.caixa_pesquisa.setPlaceholderText("Pesquisar música ou cantor...")
-        self.caixa_pesquisa.setStyleSheet("""
-            QLineEdit {
-                background-color: white;
-                border-radius: 10px;
-                padding: 5px;
-                font-size: 15px;
-            }
-        """)
-        self.caixa_pesquisa.setMinimumHeight(40)  # Aumenta um pouco o tamanho
-        self.caixa_pesquisa.textChanged.connect(self.filtrar_tabela)
-
 
         # Configura o QTableWidget
         self.tabela = QTableWidget()
@@ -192,7 +177,7 @@ class TelaPrincipal(TelaBase):
         self.adicionar_album("musica 02", "cantor", "4:20")
         self.adicionar_album("musica 03", "cantor", "2:30")
         self.adicionar_album("musica 04", "cantor", "2:30")
-        self.adicionar_album("musica 05", "cantorcantor", "3:45")
+        self.adicionar_album("musica 05", "cantor", "3:45")
         self.adicionar_album("musica 06", "cantor", "4:20")
         self.adicionar_album("musica 07", "cantor", "2:30")
         self.adicionar_album("musica 08", "cantor", "2:30")
@@ -201,68 +186,70 @@ class TelaPrincipal(TelaBase):
         self.adicionar_album("musica 11", "cantor", "2:30")
         self.adicionar_album("musica 12", "cantor", "2:30")
 
-        # Adiciona a caixa de pesquisa e a tabela ao layout
-        layout.addWidget(self.caixa_pesquisa, 0, 0, Qt.AlignmentFlag.AlignTop)
-        layout.addWidget(self.tabela, 1, 0)
+        # Adiciona a tabela ao layout
+        layout.addWidget(self.tabela, 1, 0, 1, 2)
 
-        layout.setRowStretch(1, 1)  # Permite que a tabela expanda verticalmente
-        layout.setColumnStretch(0, 1)  # Permite que a tabela expanda horizontalmente
-        # -----------------------------------------------------------
+        # Adiciona a seção de pesquisa
+        self.caixa_pesquisa = QLineEdit()
+        self.caixa_pesquisa.setPlaceholderText("Digite o nome da música ou artista : ")
+        self.caixa_pesquisa.setStyleSheet("""
+            QLineEdit {
+                background-color: rgba(255, 255, 255, 0.9);
+                border-radius: 15px;
+                padding: 5px;
+                font-size: 15px;
+            }
+        """)
+        self.caixa_pesquisa.setFixedSize(380, 30)
+        self.caixa_pesquisa.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.caixa_pesquisa.textChanged.connect(self.filtrar_tabela)
+
+        self.botao_pesquisar = QPushButton("Pesquisar")
+        self.botao_pesquisar.setFixedSize(200, 30)
+        self.botao_pesquisar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_pesquisar.setFont(self.fonte_botao)
+        self.botao_pesquisar.setStyleSheet(
+            "background-color: rgba(255,255,255,0.9);" +
+            "color: black;" +
+            "border-radius: 15px;"
+        )
+        self.botao_pesquisar.clicked.connect(lambda: self.filtrar_tabela(self.caixa_pesquisa.text()))
+
+        layout_pesquisa = QHBoxLayout()
+        layout_pesquisa.addWidget(self.caixa_pesquisa)
+        layout_pesquisa.addWidget(self.botao_pesquisar)
+
+        layout.addLayout(layout_pesquisa, 0, 0, 1, 2, Qt.AlignmentFlag.AlignCenter)
+
+        # ------------ MODELAGEM TERMINA AQUI -----------------------
 
         self.pilha_paginas.addWidget(pagina_modelo)
-        botao_usuarios.clicked.connect(lambda: self.changePage(0))
+        self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        self.widget_central_layout.addWidget(self.pilha_paginas, 1, 0, Qt.AlignmentFlag.AlignCenter)
+        self.widget_central_layout.setContentsMargins(0, 0, 0, 15)
 
-        self.pilha_paginas.setCurrentIndex(0)
-        
-        pagina_tocando = QWidget()
-        pagina_tocando.setMinimumSize(tela_largura / 4, tela_altura - 90)
-        pagina_tocando.setStyleSheet("background-color: rgb(21,21,21); border-radius: 10px")
-        pagina_tocando_layout = QGridLayout(pagina_tocando)
+    def adicionar_album(self, nome, cantor, duracao):
+        rowPosition = self.tabela.rowCount()
+        self.tabela.insertRow(rowPosition)
+        self.tabela.setItem(rowPosition, 0, QTableWidgetItem(nome))
+        self.tabela.setItem(rowPosition, 1, QTableWidgetItem(cantor))
+        self.tabela.setItem(rowPosition, 2, QTableWidgetItem(duracao))
 
-        nowPlayingLabel = QLabel("Tocando agora (tela)")
-        nowPlayingLabel.setWordWrap(True)
-        nowPlayingLabel.setFont(self.fonte_rotulo)
+    def sair(self) -> None:
+        app = QApplication.instance()
+        app.quit()
 
-        pagina_tocando_layout.addWidget(nowPlayingLabel, 0, 0, Qt.AlignmentFlag.AlignCenter)
-
-        self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignHCenter)
-        self.widget_central_layout.addWidget(self.pilha_paginas, 1, 0)
-        self.widget_central_layout.addWidget(pagina_tocando, 1, 1)
-    
-    def adicionar_album(self, nome_musica: str, cantor: str, duracao: str):
-        row_position = self.tabela.rowCount()
-        self.tabela.insertRow(row_position)
-        self.tabela.setItem(row_position, 0, QTableWidgetItem(nome_musica))
-        self.tabela.setItem(row_position, 1, QTableWidgetItem(cantor))
-        self.tabela.setItem(row_position, 2, QTableWidgetItem(duracao))
-
-    def filtrar_tabela(self):
-        filtro = self.caixa_pesquisa.text().lower()
+    def filtrar_tabela(self, texto: str) -> None:
         for row in range(self.tabela.rowCount()):
-            musica_item = self.tabela.item(row, 0).text().lower()
-            cantor_item = self.tabela.item(row, 1).text().lower()
-            if filtro in musica_item or filtro in cantor_item:
+            item_nome = self.tabela.item(row, 0)
+            item_cantor = self.tabela.item(row, 1)
+            if texto.lower() in item_nome.text().lower() or texto.lower() in item_cantor.text().lower():
                 self.tabela.setRowHidden(row, False)
             else:
                 self.tabela.setRowHidden(row, True)
 
-    def close(self) -> bool:
-        sys.exit()
-    
-    def changePage(self, index: int):
-        self.pilha_paginas.setCurrentIndex(index)
-
-    def sair(self):
-        self.close()
-
-class Template:
-    def __init__(self): pass
-
-    @staticmethod
-    def inicializar():
-        app = QApplication(sys.argv)
-        tela = TelaPrincipal()
-        tela.show()
-        app.exec()
-
-Template.inicializar()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = TelaPrincipal()
+    window.show()
+    sys.exit(app.exec())
