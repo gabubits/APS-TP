@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from modelo.album import Album
 from modelo.artista import Artista
 from modelo.cancao import Cancao
@@ -10,7 +12,7 @@ from modelo.usuario import Usuario
 class UsuarioP:
     
     def __init__(self) -> None:
-        self.arquivo = 'usuario.json'
+        self.arquivo = 'persistencia/usuario.json'
         self.usuarios = self.obter_usuarios()
         
     def atualizar_arquivo(self):
@@ -101,12 +103,13 @@ class UsuarioP:
                     'nome': playlist['nome'],
                     'descricao': playlist['descricao'],
                     'img_capa': playlist['img_capa'],
-                    'data_criacao': playlist['data_criacao'],
-                    'data_ultima_modif': playlist['data_ultima_modif'],
+                    'data_criacao': datetime.fromisoformat(playlist['data_criacao']),
+                    'data_ultima_modif': datetime.fromisoformat(playlist['data_ultima_modif']),
                     'comentario': playlist['comentario'],
                     'playlist_id': playlist['playlist_id'],
                     'cancoes_playlist': cancoes_playlist
                 }
+
 
         
                 playlists.append(Playlist(**playlist_data))
