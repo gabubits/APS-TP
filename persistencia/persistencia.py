@@ -137,3 +137,17 @@ class UsuarioP:
     def to_dict(self):
         return [u.to_dict() for u in self.usuarios]
 
+    # -- Canção 
+    def inserir_cancao(self, objeto: Cancao):
+        self.cancoes.append(objeto)
+        return True
+
+    def excluir_cancao(self, objeto: Cancao):
+        cancao = self.buscar_cancao_id(objeto.cancao_id)
+        if not cancao:
+            return False
+        self.cancoes.remove(cancao)
+    
+    def buscar_cancao_id(self, id_cancao):
+        result = [cancao for cancao in self.cancoes if cancao.cancao_id == id_cancao]
+        return result[0] if len(result) else []
