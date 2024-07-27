@@ -1,82 +1,82 @@
 from .utils.tela_base import *
 from .tela_principal import TelaPrincipal
-from controle.usuario_controle import UsuarioControle
+from controle.controle import Controle
 from modelo.usuario import Usuario
 
 class TelaOpcoes(TelaBase):
-    def __init__(self, parent: QWidget | None, info_usuario: Usuario, usuario_controle: UsuarioControle) -> None:
+    def __init__(self, parent: QWidget | None, id_usuario: int, controle: Controle) -> None:
         super().__init__(parent = parent, 
-                         titulo = 'Streamy', 
+                         titulo = '[Player]* - Opções', 
                          tamanho = QSize(1500, 900))
 
-        self.info_usuario = info_usuario
-        self.usuario_controle = usuario_controle
+        self.controle = controle
+        self.id_usuario = id_usuario
 
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         barra_topo.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 20px;")
 
-        rotulo_boas_vindas = QLabel(f"Hey {self.info_usuario.nome}!")
+        self.rotulo_boas_vindas = QLabel(f"Hey {self.controle.buscar_id(self.id_usuario).nome}!")
         fonte_bv = QFont(self.fonte_principal, 20)
         fonte_bv.setWeight(QFont.Weight.DemiBold)
-        rotulo_boas_vindas.setFont(fonte_bv)
+        self.rotulo_boas_vindas.setFont(fonte_bv)
 
-        botao_fechar = QPushButton()
-        botao_fechar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_fechar = QPushButton()
+        self.botao_fechar.setCursor(Qt.CursorShape.PointingHandCursor)
         img_fechar = QPixmap(pathlib.Path("visao/src/img/close.png").resolve())
         icon_fechar = QIcon(img_fechar)
-        botao_fechar.setIcon(icon_fechar)
-        botao_fechar.setIconSize(QSize(25,25))
-        botao_fechar.setMaximumSize(QSize(25,25))
-        botao_fechar.clicked.connect(self.close)
+        self.botao_fechar.setIcon(icon_fechar)
+        self.botao_fechar.setIconSize(QSize(25,25))
+        self.botao_fechar.setMaximumSize(QSize(25,25))
+        self.botao_fechar.clicked.connect(self.close)
 
-        botao_minimizar = QPushButton()
-        botao_minimizar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_minimizar = QPushButton()
+        self.botao_minimizar.setCursor(Qt.CursorShape.PointingHandCursor)
         img_minimizar = QPixmap(pathlib.Path("visao/src/img/minimize.png").resolve())
         icon_minimizar = QIcon(img_minimizar)
-        botao_minimizar.setIcon(icon_minimizar)
-        botao_minimizar.setIconSize(QSize(25,25))
-        botao_minimizar.setMaximumSize(QSize(25,25))
-        botao_minimizar.clicked.connect(self.showMinimized)
+        self.botao_minimizar.setIcon(icon_minimizar)
+        self.botao_minimizar.setIconSize(QSize(25,25))
+        self.botao_minimizar.setMaximumSize(QSize(25,25))
+        self.botao_minimizar.clicked.connect(self.showMinimized)
 
         botoes_layout = QHBoxLayout()
         botoes_layout.setSpacing(5)
         botoes_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
-        botoes_layout.addWidget(botao_minimizar)
-        botoes_layout.addWidget(botao_fechar)
+        botoes_layout.addWidget(self.botao_minimizar)
+        botoes_layout.addWidget(self.botao_fechar)
 
-        botao_ver_perfil = QPushButton()
-        botao_ver_perfil.setCursor(Qt.CursorShape.PointingHandCursor)
-        img_perfil = QPixmap(pathlib.Path(self.info_usuario.img_perfil).resolve())
+        self.botao_ver_perfil = QPushButton()
+        self.botao_ver_perfil.setCursor(Qt.CursorShape.PointingHandCursor)
+        img_perfil = QPixmap(pathlib.Path(self.controle.buscar_id(id_usuario).img_perfil).resolve())
         icon_perfil = QIcon(img_perfil)
-        botao_ver_perfil.setIcon(icon_perfil)
-        botao_ver_perfil.setIconSize(QSize(35, 35))
-        #botao_ver_perfil.clicked.connect(self.showMinimized)
+        self.botao_ver_perfil.setIcon(icon_perfil)
+        self.botao_ver_perfil.setIconSize(QSize(35, 35))
+        #self.botao_ver_perfil.clicked.connect(self.showMinimized)
 
         barra_topo_layout = QGridLayout(barra_topo)
-        barra_topo_layout.addWidget(rotulo_boas_vindas, 0, 0, Qt.AlignmentFlag.AlignLeft)
-        barra_topo_layout.addWidget(botao_ver_perfil, 0, 1, Qt.AlignmentFlag.AlignCenter)
+        barra_topo_layout.addWidget(self.rotulo_boas_vindas, 0, 0, Qt.AlignmentFlag.AlignLeft)
+        barra_topo_layout.addWidget(self.botao_ver_perfil, 0, 1, Qt.AlignmentFlag.AlignCenter)
         barra_topo_layout.addLayout(botoes_layout, 0, 2, Qt.AlignmentFlag.AlignRight)
         
-        menu_opcoes = QWidget()
-        menu_opcoes.setFixedSize(500, 500)
-        menu_opcoes.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        menu_opcoes.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
+        self.menu_opcoes = QWidget()
+        self.menu_opcoes.setFixedSize(500, 500)
+        self.menu_opcoes.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.menu_opcoes.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
         self.setContentsMargins(0, 0, 0, 80)
 
-        botao_usuarios = QPushButton("Ver Usuários")
-        botao_cancoes = QPushButton("Ver Canções")
-        botao_albuns = QPushButton("Ver Álbuns")
-        botao_playlists = QPushButton("Ver Playlists")
-        botao_artistas = QPushButton("Ver Artistas")
+        botao_usuarios = QPushButton("Seu perfil")
+        botao_cancoes = QPushButton("Canções")
+        botao_albuns = QPushButton("Álbuns")
+        botao_playlists = QPushButton("Playlists")
+        botao_artistas = QPushButton("Artistas")
 
         self.fonte_botao.setPointSize(20)
 
         botoes = [botao_usuarios, botao_cancoes, botao_albuns, \
                        botao_playlists, botao_artistas]
 
-        menu_ops_layout = QGridLayout(menu_opcoes)
+        menu_ops_layout = QGridLayout(self.menu_opcoes)
         for i, botao in enumerate(botoes):
             botao.setFixedSize(400, 80)
             botao.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -103,17 +103,17 @@ class TelaOpcoes(TelaBase):
 
         self.widget_central_layout.setSpacing(0)
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignTop)
-        self.widget_central_layout.addWidget(menu_opcoes, 1, 0, Qt.AlignmentFlag.AlignCenter)
+        self.widget_central_layout.addWidget(self.menu_opcoes, 1, 0, Qt.AlignmentFlag.AlignCenter)
         self.widget_central_layout.addWidget(botao_sair, 2, 0, Qt.AlignmentFlag.AlignCenter)
 
     def close(self) -> bool:
         sys.exit()
     
     def abrir_tela(self, indice_pagina: int):
-        TelaPrincipal(parent = self.parentWidget(), 
+        TelaPrincipal(parent = self, 
                       op_padrao=indice_pagina,
-                      usuario_controle=self.usuario_controle,
-                      info_usuario=self.info_usuario).show()
+                      controle=self.controle,
+                      id_usuario=self.id_usuario).show()
         self.hide()
     
     def abrir_tela_login(self):

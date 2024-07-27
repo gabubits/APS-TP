@@ -2,71 +2,71 @@ from PySide6.QtGui import QCloseEvent
 from .utils.tela_base import *
 
 from .tela_opcoes import TelaOpcoes
-from controle.usuario_controle import UsuarioControle
+from controle.controle import Controle
 from modelo.usuario import Usuario
 
 class TelaCadastro(TelaBase):
-    def __init__(self, parent: QWidget | None, usuario_controle: UsuarioControle) -> None:
+    def __init__(self, parent: QWidget | None, controle: Controle) -> None:
         super().__init__(parent = parent,
-                         titulo = "Streamy",
+                         titulo = "[Player]* - Cadastro",
                          tamanho = QSize(600, 750))
         
-        self.usuario_controle = usuario_controle
-
+        self.controle = controle
+        
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         barra_topo.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 20px;")
 
-        rotulo_boas_vindas = QLabel("Olá novo Streamy!")
+        self.rotulo_boas_vindas = QLabel("Olá! Crie sua conta!")
         fonte_bv = QFont(self.fonte_principal, 20)
         fonte_bv.setWeight(QFont.Weight.DemiBold)
-        rotulo_boas_vindas.setFont(fonte_bv)
+        self.rotulo_boas_vindas.setFont(fonte_bv)
 
-        botao_fechar = QPushButton()
-        botao_fechar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_fechar = QPushButton()
+        self.botao_fechar.setCursor(Qt.CursorShape.PointingHandCursor)
         img_fechar = QPixmap(pathlib.Path("visao/src/img/close.png").resolve())
         icon_fechar = QIcon(img_fechar)
-        botao_fechar.setIcon(icon_fechar)
-        botao_fechar.setIconSize(QSize(25,25))
-        botao_fechar.setMaximumSize(QSize(25,25))
-        botao_fechar.clicked.connect(sys.exit)
+        self.botao_fechar.setIcon(icon_fechar)
+        self.botao_fechar.setIconSize(QSize(25,25))
+        self.botao_fechar.setMaximumSize(QSize(25,25))
+        self.botao_fechar.clicked.connect(sys.exit)
 
-        botao_minimizar = QPushButton()
-        botao_minimizar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_minimizar = QPushButton()
+        self.botao_minimizar.setCursor(Qt.CursorShape.PointingHandCursor)
         img_minimizar = QPixmap(pathlib.Path("visao/src/img/minimize.png").resolve())
         icon_minimizar = QIcon(img_minimizar)
-        botao_minimizar.setIcon(icon_minimizar)
-        botao_minimizar.setIconSize(QSize(25,25))
-        botao_minimizar.setMaximumSize(QSize(25,25))
-        botao_minimizar.clicked.connect(self.showMinimized)
+        self.botao_minimizar.setIcon(icon_minimizar)
+        self.botao_minimizar.setIconSize(QSize(25,25))
+        self.botao_minimizar.setMaximumSize(QSize(25,25))
+        self.botao_minimizar.clicked.connect(self.showMinimized)
 
         botoes_layout = QHBoxLayout()
         botoes_layout.setSpacing(5)
         botoes_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        botoes_layout.addWidget(botao_minimizar)
-        botoes_layout.addWidget(botao_fechar)
+        botoes_layout.addWidget(self.botao_minimizar)
+        botoes_layout.addWidget(self.botao_fechar)
 
-        botao_voltar = QPushButton()
-        botao_voltar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.botao_voltar = QPushButton()
+        self.botao_voltar.setCursor(Qt.CursorShape.PointingHandCursor)
         img_voltar = QPixmap(pathlib.Path("visao/src/img/arrow-left-white.png").resolve())
         icon_voltar = QIcon(img_voltar)
-        botao_voltar.setIcon(icon_voltar)
-        botao_voltar.setIconSize(QSize(25,25))
-        botao_voltar.setMaximumSize(QSize(25,25))
-        botao_voltar.clicked.connect(self.fechar_e_voltar)
+        self.botao_voltar.setIcon(icon_voltar)
+        self.botao_voltar.setIconSize(QSize(25,25))
+        self.botao_voltar.setMaximumSize(QSize(25,25))
+        self.botao_voltar.clicked.connect(self.fechar_e_voltar)
 
         barra_topo_layout = QGridLayout(barra_topo)
-        barra_topo_layout.addWidget(botao_voltar, 0, 0)
-        barra_topo_layout.addWidget(rotulo_boas_vindas, 0, 1, Qt.AlignmentFlag.AlignCenter)
+        barra_topo_layout.addWidget(self.botao_voltar, 0, 0)
+        barra_topo_layout.addWidget(self.rotulo_boas_vindas, 0, 1, Qt.AlignmentFlag.AlignCenter)
         barra_topo_layout.addLayout(botoes_layout, 0, 2)
 
-        form_cadastro = QFrame()
-        form_cadastro.setMinimumSize(400, 600)
-        form_cadastro.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        form_cadastro.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
+        self.form_cadastro = QFrame()
+        self.form_cadastro.setMinimumSize(400, 600)
+        self.form_cadastro.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.form_cadastro.setStyleSheet("background-color: rgb(21, 21, 21); border-radius: 15px;")
 
-        form_cadastro_layout = QGridLayout(form_cadastro)
+        form_cadastro_layout = QGridLayout(self.form_cadastro)
 
         rotulo_inicial = QLabel("Cadastro")
         rotulo_inicial.setWordWrap(True)
@@ -89,19 +89,19 @@ class TelaCadastro(TelaBase):
         self.entrada_nome.setStyleSheet(estilo_caixa_entrada)
         self.entrada_nome.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        rotulo_email = QLabel("Endereço de e-mail *")
+        rotulo_email = QLabel("Username *")
         rotulo_email.setFont(self.fonte_rotulo)
         rotulo_email.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         rotulo_email.setContentsMargins(0, 20, 0, 0)
 
-        self.entrada_email = QLineEdit()
-        self.entrada_email.setObjectName("Endereço de e-mail")
-        self.entrada_email.setFixedSize(380, 30)
-        self.entrada_email.setFont(self.fonte_entrada)
-        self.entrada_email.setStyleSheet(estilo_caixa_entrada)
-        self.entrada_email.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.entrada_username = QLineEdit()
+        self.entrada_username.setObjectName("Username")
+        self.entrada_username.setFixedSize(380, 30)
+        self.entrada_username.setFont(self.fonte_entrada)
+        self.entrada_username.setStyleSheet(estilo_caixa_entrada)
+        self.entrada_username.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        rotulo_senha = QLabel("Senha *")
+        rotulo_senha = QLabel("Senha")
         rotulo_senha.setFont(self.fonte_rotulo)
         rotulo_senha.setContentsMargins(0, 20, 0, 0)
         rotulo_senha.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -114,7 +114,7 @@ class TelaCadastro(TelaBase):
         self.entrada_senha.setEchoMode(QLineEdit.EchoMode.Password)
         self.entrada_senha.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        rotulo_foto = QLabel("Foto de perfil")
+        rotulo_foto = QLabel("Imagem de perfil")
         rotulo_foto.setFont(self.fonte_rotulo)
         rotulo_foto.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         rotulo_foto.setContentsMargins(0, 20, 0, 0)
@@ -134,17 +134,6 @@ class TelaCadastro(TelaBase):
         botao_enviar_foto.setStyleSheet("border-radius: 5px; background-color: white; color: black;")
         botao_enviar_foto.clicked.connect(self.enviar_img)
 
-        rotulo_bio = QLabel("Sua Biografia")
-        rotulo_bio.setFont(self.fonte_rotulo)
-        rotulo_bio.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        rotulo_bio.setContentsMargins(0, 20, 0, 0)
-
-        self.entrada_bio = QTextEdit()
-        self.entrada_bio.setFixedSize(380, 100)
-        self.entrada_bio.setFont(self.fonte_entrada)
-        self.entrada_bio.setStyleSheet(estilo_caixa_entrada)
-        self.entrada_bio.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
         self.botao_cadastrar = QPushButton("Cadastrar-se")
         self.botao_cadastrar.setFixedSize(125, 50)
         self.botao_cadastrar.setStyleSheet(estilo_botao)
@@ -157,18 +146,16 @@ class TelaCadastro(TelaBase):
         form_cadastro_layout.addWidget(rotulo_nome, 1, 0, Qt.AlignmentFlag.AlignHCenter)
         form_cadastro_layout.addWidget(self.entrada_nome, 2, 0)
         form_cadastro_layout.addWidget(rotulo_email, 3, 0, Qt.AlignmentFlag.AlignHCenter)
-        form_cadastro_layout.addWidget(self.entrada_email, 4, 0)
+        form_cadastro_layout.addWidget(self.entrada_username, 4, 0)
         form_cadastro_layout.addWidget(rotulo_senha, 5, 0, Qt.AlignmentFlag.AlignHCenter)
         form_cadastro_layout.addWidget(self.entrada_senha, 6, 0)
         form_cadastro_layout.addWidget(rotulo_foto, 7, 0, Qt.AlignmentFlag.AlignHCenter)
         form_cadastro_layout.addWidget(self.entrada_foto, 8, 0)
         form_cadastro_layout.addWidget(botao_enviar_foto, 9, 0)
-        form_cadastro_layout.addWidget(rotulo_bio, 10, 0, Qt.AlignmentFlag.AlignHCenter)
-        form_cadastro_layout.addWidget(self.entrada_bio, 11, 0)
-        form_cadastro_layout.addWidget(self.botao_cadastrar, 12, 0, Qt.AlignmentFlag.AlignCenter)
+        form_cadastro_layout.addWidget(self.botao_cadastrar, 10, 0, Qt.AlignmentFlag.AlignCenter)
 
         fcl_ajuste = QVBoxLayout()
-        fcl_ajuste.addWidget(form_cadastro, 0, Qt.AlignmentFlag.AlignCenter)
+        fcl_ajuste.addWidget(self.form_cadastro, 0, Qt.AlignmentFlag.AlignCenter)
         fcl_ajuste.setContentsMargins(0, 0, 0, 50)
 
         self.widget_central_layout.setSpacing(0)
@@ -189,8 +176,7 @@ class TelaCadastro(TelaBase):
         self.hide()
     
     def verificar_informacoes(self):
-        mandatoryInputs = [self.entrada_nome, self.entrada_email, self.entrada_senha]
-        optionalInputs = [self.entrada_bio, self.entrada_foto]
+        mandatoryInputs = [self.entrada_nome, self.entrada_username]
 
         emptyInputs =   [
                         _input.objectName() \
@@ -208,28 +194,28 @@ class TelaCadastro(TelaBase):
             ).exec()
             return
         
-        if self.usuario_controle.buscar_email(self.entrada_email.text()):
+        if self.controle.buscar_username(self.entrada_username.text()):
             MessageBox(
                 self,
                 'Falha na autenticação!',
                 QMessageBox.Icon.Warning,
-                f'{self.entrada_email.text()}'
+                f'"{self.entrada_username.text()}"'
                 'já está registrado.'
-                'Por favor, escolha outro e-mail.'
+                'Por favor, escolha outro username.'
             ).exec()
             return
         
         novo_usuario = Usuario(
-            self.entrada_nome.text(),
-            self.entrada_email.text(),
+            self.entrada_username.text(),
             self.entrada_senha.text(),
-            self.entrada_bio.toPlainText()
+            self.entrada_nome.text(),
+            self.entrada_foto.text()
         )
 
         if len(self.entrada_foto.text()) != 0:
             novo_usuario.img_perfil = self.entrada_foto.text()
             
-        self.usuario_controle.inserir(novo_usuario)
+        self.controle.inserir_usuario(novo_usuario)
 
         MessageBox(self,
                    f'Bem-vindo {self.entrada_nome.text()}',
@@ -248,7 +234,7 @@ class TelaCadastro(TelaBase):
         self.oldPos = event.globalPos()
     
     def closeEvent(self, event: QCloseEvent) -> None:
-        self.usuario_controle.atualizar_arquivo()
+        self.controle.atualizar_arquivo()
     
     def keyReleaseEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Return:

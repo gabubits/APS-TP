@@ -6,7 +6,7 @@ from modelo.playlist import Playlist
 
 class Usuario:
     
-    def __init__(self, username, senha, nome, img_perfil,usuario_id, colecao:Artista=[], playlists:Playlist=[]) -> None:
+    def __init__(self, username, senha, nome, img_perfil,usuario_id = None, colecao:list[Artista]=[], playlists:list[Playlist]=[]) -> None:
         self.usuario_id = usuario_id
         self.username = username
         self.senha = senha
@@ -16,10 +16,19 @@ class Usuario:
         self.playlists = playlists
     
     def add_colecao(self, artista:Artista):
-        artista.artista_id = len(self.colecao)
+        if self.artista_na_colecao(artista.nome): return
+        if len(self.colecao) == 0:
+            artista.artista_id = 1
+        else:
+            artista.artista_id = self.colecao[-1].artista_id + 1
         self.colecao.append(artista)
+    
+    def artista_na_colecao(self, nome_art: str):
+        for artista in self.colecao:
+            if artista.nome.lower() == nome_art:
+                return artista
         
-            
+        return None
     
     def to_dict(self):
         print(self.playlists)
