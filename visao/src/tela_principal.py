@@ -167,7 +167,8 @@ class TelaPrincipal(TelaBase):
     def changePage(self, page: QWidget):
         if self.pilha_paginas.currentWidget == page: return
         self.pilha_paginas.setCurrentWidget(page)
-    
+        
+    ''' Funções não utilizadas no momento
     def pesquisar_usuario(self, texto: str, list_widget: QListWidget):
         list_widget.clear()
         if len(texto.rstrip()) == 0:
@@ -195,7 +196,7 @@ class TelaPrincipal(TelaBase):
                 self.controle.excluir(self.resultados_pesquisa[indice])
                 item = list_widget.takeItem(indice)
                 del item
-
+    '''
     def sair(self):
         self.controle.atualizar_arquivo()
         self.close()
