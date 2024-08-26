@@ -1,64 +1,38 @@
-from modelo.cancao import Cancao
+from modelo.entidade import (dataclass, Entidade)
+from datetime import datetime
+from typing import List, Dict
+from dataclasses import field
 
+@dataclass
+class Album(Entidade):
+    titulo: str
+    img_capa: str
+    data_lancamento: datetime
+    data_adicao: datetime
+    tipo: str
+    artistas: List[int] = field(default_factory=list)
+    cancoes: List[int] = field(default_factory=list)
 
-class Album:
-    def __init__(self, nome, descricao, img_capa, lancamento_ano, lancamento_dia, lancamento_mes, adicao_ano, adicao_dia,adicao_mes,type,comentario, artistas, album_id, cancoes:list[Cancao]=[]) -> None:
-        
-        self.nome = nome
-        self.descricao = descricao
-        self.img_capa = img_capa
-        self.lancamento_ano = lancamento_ano 
-        self.lancamento_dia = lancamento_dia
-        self.lancamento_mes = lancamento_mes
-        self.adicao_ano = adicao_ano
-        self.adicao_dia = adicao_dia
-        self.adicao_mes = adicao_mes
-        self.type = type
-        self.comentario = comentario
-        self.artistas = artistas
-        self.album_id = album_id
-        self.cancoes = cancoes
-
-    def cancao_existente(self, titulo_cancao):
-        for cancao in self.cancoes:
-            if cancao.titulo.lower() == titulo_cancao:
-                return True
-
-        return False
+    def add_artista(self, artista_id: int) -> None:
+        self.artistas.append(artista_id)
     
-    def adicionar_cancao(self, cancao: Cancao):
-        if self.cancao_existente(cancao.titulo): return
-        if len(self.cancoes) == 0:
-            cancao.cancao_id = 1
-        else:
-            cancao.cancao_id = self.cancoes[-1].cancao_id + 1
-        self.cancoes.append(cancao)
+    def rem_artista(self, artista_id: int) -> None:
+        self.artistas.remove(artista_id)
     
-    def remover_cancao(self, cancao_id):
-        for i in range(len(self.cancoes)):
-            if self.cancoes[i] == cancao_id:
-                del self.cancoes[i]
-                return
-
+    def add_cancao(self, cancao_id: int) -> None:
+        self.artistas.append(cancao_id)
     
-    def to_dict(self):
-         return {
-           'nome': self.nome,
-            'descricao': self.descricao,
-            'img_capa': self.img_capa,
-            'lancamento_ano': self.lancamento_ano,
-            'lancamento_dia': self.lancamento_dia,
-            'lancamento_mes':  self.lancamento_mes,
-            'adicao_ano': self.adicao_ano,
-            'adicao_dia': self.adicao_dia,
-            'adicao_mes': self.adicao_mes,
-            'type': self.type,
-            'comentario' : self.comentario,
-            'artistas' : self.artistas,
-            'album_id': self.album_id,
-            'cancoes': [cancao.to_dict() for cancao in self.cancoes] 
-
-         }
-        
-        
-        
+    def rem_cancao(self, cancao_id: int) -> None:
+        self.artistas.remove(cancao_id)
+    
+    @staticmethod
+    def from_dict(album_dict: Dict):
+        id = album_dict["id"]
+        titulo = album_dict["titulo"]
+        img_capa = album_dict["img_capa"]
+        data_lancamento = datetime.fromisoformat(album_dict["data_lancamento"])
+        data_adicao = datetime.fromisoformat(album_dict["data_adicao"])
+        tipo = album_dict["tipo"]
+        artistas = album_dict["artistas"]
+        cancoes = album_dict["cancoes"]
+        return Album(id, titulo, img_capa, data_lancamento, data_adicao, tipo, artistas, cancoes)

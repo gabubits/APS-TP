@@ -1,0 +1,21 @@
+[
+    {
+        "id": 0,
+        "nome_de_usuario": "gab",
+        "senha": "gab",
+        "nome": "gabriel",
+        "img_perfil": "gabriel.png",
+        "colecao": [],
+        "playlists": [],
+        "reproducoes": [
+            {
+                "data": "21/08/2024 18:27:00",
+                "cancao": 3
+            },
+            {
+                "data": "21/08/2024 18:30:00",
+                "cancao": 2
+            }
+        ]
+    }
+]

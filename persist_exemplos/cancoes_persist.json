@@ -1,0 +1,20 @@
+[
+    {
+        "id": 0,
+        "titulo": "365",
+        "artistas": [0, 5, 8],
+        "genero": "Pop",
+        "album": 32,
+        "diretorio_audio": "365.mp3",
+        "data_adicao": "21/08/2024 18:26:32"
+    },
+    {
+        "id": 1,
+        "titulo": "360",
+        "artistas": [0],
+        "genero": "Pop",
+        "album": 32,
+        "diretorio_audio": "360.mp3",
+        "data_adicao": "21/08/2024 18:26:33"
+    }
+]

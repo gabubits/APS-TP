@@ -1,39 +1,30 @@
-from modelo.reproducao import Reproducao
+from modelo.entidade import (dataclass, Entidade)
+from typing import List, Dict
+from datetime import datetime
+from dataclasses import field
 
+@dataclass
+class Cancao(Entidade):
+    titulo: str
+    genero: str
+    album: int
+    diretorio_audio: str
+    data_adicao: datetime
+    artistas: List[int] = field(default_factory=list)
 
-class Cancao:
-     
-  def __init__(self, titulo, artistas, genero, album, diretorio_audio, lancamento_ano, lancamento_dia, lancamento_mes, adicao_ano, adicao_dia, adicao_mes, comentario, cancao_id,reproducoes:Reproducao = []) -> None:
-    self.titulo = titulo
-    self.artistas = artistas
-    self.genero = genero
-    self.album = album
-    self.diretorio_audio = diretorio_audio
-    self.lancamento_ano = lancamento_ano
-    self.lancamento_dia = lancamento_dia
-    self.lancamento_mes = lancamento_mes
-    self.adicao_ano = adicao_ano
-    self.adicao_dia = adicao_dia
-    self.adicao_mes = adicao_mes
-    self.comentario = comentario
-    self.cancao_id = cancao_id
-    self.reproducoes = reproducoes
+    def add_artista(self, artista_id: int) -> None:
+        self.artistas.append(artista_id)
+
+    def rem_artista(self, artista_id: int) -> None:
+        self.artistas.remove(artista_id)
     
-
-  def to_dict(self):
-      return {
-        'titulo': self.titulo,
-        'artistas': self.artistas,
-        'genero': self.genero,
-        'album': self.album,
-        'diretorio_audio': self.diretorio_audio,
-        'lancamento_ano':  self.lancamento_ano,
-        'lancamento_dia': self.lancamento_dia,
-        'lancamento_mes': self.lancamento_mes,
-        'adicao_ano': self.adicao_ano,
-        'adicao_dia': self.adicao_dia,
-        'adicao_mes': self.adicao_mes,
-        'comentario': self.comentario,
-        'cancao_id': self.cancao_id,
-        'reproducoes' : [rep.to_dict() for rep in self.reproducoes]
-      }
+    @staticmethod
+    def from_dict(cancao_dict: Dict):
+        id = cancao_dict["id"]
+        titulo = cancao_dict["titulo"]
+        artistas = cancao_dict["artistas"]
+        genero = cancao_dict["genero"]
+        album = cancao_dict["album"]
+        diretorio_audio = cancao_dict["diretorio_audio"]
+        data_adicao = datetime.fromisoformat(cancao_dict["data_edicao"])
+        return Cancao(id, titulo, artistas, genero, album, diretorio_audio, data_adicao)

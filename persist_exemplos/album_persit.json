@@ -1,0 +1,22 @@
+[
+    {
+        "id": 0,
+        "titulo": "BRAT",
+        "img_capa": "brat.png",
+        "data_lancamento": "21/08/2024",
+        "data_adicao": "21/08/2024",
+        "tipo": "LP",
+        "artistas": [0],
+        "cancoes": []
+    },
+    {
+        "id": 1,
+        "titulo": "Pop 2",
+        "img_capa": "pop2.png",
+        "data_lancamento": "21/08/2024",
+        "data_adicao": "21/08/2024",
+        "tipo": "LP",
+        "artistas": [0],
+        "cancoes": []
+    }
+]

@@ -1,44 +1,46 @@
+from modelo.entidade import (dataclass, Entidade)
+from typing import List, Dict
+from datetime import datetime
+from dataclasses import field
 
+@dataclass
+class Reproducao:
+    data: datetime
+    cancao: int
 
-from modelo.artista import Artista
-from modelo.playlist import Playlist
+@dataclass
+class Usuario(Entidade):
+    nome_de_usuario: str
+    senha: str
+    nome: str
+    img_perfil: str
+    cancoes: List[int] = field(default_factory=list)
+    playlists: List[int] = field(default_factory=list)
+    reproducoes: List[Reproducao] = field(default_factory=list)
 
+    def add_cancao(self, cancao_id: int) -> None:
+        self.cancoes.append(cancao_id)
+    
+    def rem_cancao(self, cancao_id: int) -> None:
+        self.cancoes.remove(cancao_id)
+    
+    def add_playlist(self, playlist_id: int) -> None:
+        self.playlists.append(playlist_id)
+    
+    def rem_playlist(self, playlist_id: int) -> None:
+        self.playlists.remove(playlist_id)
+    
+    def add_reproducao(self, cancao_id: int) -> None:
+        self.reproducoes.append(Reproducao(datetime.today(), cancao_id))
 
-class Usuario:
-    
-    def __init__(self, username, senha, nome, img_perfil,usuario_id = None, colecao:list[Artista]=[], playlists:list[Playlist]=[]) -> None:
-        self.usuario_id = usuario_id
-        self.username = username
-        self.senha = senha
-        self.nome = nome
-        self.img_perfil = img_perfil            
-        self.colecao = colecao 
-        self.playlists = playlists
-    
-    def add_colecao(self, artista:Artista):
-        if self.artista_na_colecao(artista.nome): return
-        if len(self.colecao) == 0:
-            artista.artista_id = 1
-        else:
-            artista.artista_id = self.colecao[-1].artista_id + 1
-        self.colecao.append(artista)
-    
-    def artista_na_colecao(self, nome_art: str):
-        for artista in self.colecao:
-            if artista.nome.lower() == nome_art:
-                return artista
-        
-        return None
-    
-    def to_dict(self):
-        print(self.playlists)
-        return {
-            'usuario_id': self.usuario_id,
-            'username': self.username,
-            'senha': self.senha,
-            'nome': self.nome,
-            'img_perfil': self.img_perfil,
-            'colecao': [artista.to_dict() for artista in self.colecao],
-            'playlists': [playlist.to_dict() for playlist in self.playlists]
-            
-        }
+    @staticmethod
+    def from_dict(usuario_dict: Dict):
+        id = usuario_dict["id"]
+        nome_de_usuario = usuario_dict["nome_de_usuario"]
+        senha = usuario_dict["senha"]
+        nome = usuario_dict["nome"]
+        img_perfil = usuario_dict["img_perfil"]
+        cancoes = usuario_dict["cancoes"]
+        playlists = usuario_dict["playlists"]
+        reproducoes = [Reproducao(datetime.fromisoformat(rep["data"]), rep["cancao"]) for rep in usuario_dict["reproducoes"]]
+        return Usuario(id, nome_de_usuario, senha, nome, img_perfil, cancoes, playlists, reproducoes)
