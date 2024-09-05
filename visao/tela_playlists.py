@@ -108,7 +108,7 @@ class TelaPlaylists(QWidget):
         row = self.lista.row(item_selecionado)
         play_rem: PlaylistItemList = self.lista.takeItem(row)
         self.controle.tipo_controle = PlaylistControle()
-        self.usuario_controle.remover_playlist(self.usuario, play_rem.playlist)
+        self.usuario.rem_playlist()
         self.controle.remover(play_rem.playlist)
         
         msg_sucesso = QMessageBox(self)

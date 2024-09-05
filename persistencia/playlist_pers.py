@@ -47,13 +47,8 @@ class PlaylistPers(DAO):
         
     
     def remover(self, objeto: Entidade) -> None:
-        for p in self.playlists:
-            print(f'p {p.id}  ob {objeto.id}')
-            if p.id == objeto.id:
-                self.playlists.remove(p)
-                self.atualizar_dados()
-                return
-        return 
+        self.playlists.remove(objeto)
+        self.atualizar_dados()
         
     
     def pesquisar(self, atributo: str, valor: str):
