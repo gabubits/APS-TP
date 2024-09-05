@@ -14,7 +14,9 @@ class Playlist(Entidade):
         self.cancoes.append(cancao)
     
     def rem_cancao(self, cancao: Cancao) -> None:
-        self.cancoes.remove(cancao)
+        try:
+            self.cancoes.remove(cancao)
+        except: pass
     
     def asdict(self) -> None:
         return {

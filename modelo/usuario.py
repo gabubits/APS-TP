@@ -17,14 +17,18 @@ class Usuario(Entidade):
         self.colecao.append(cancao)
     
     def rem_cancao(self, cancao: Cancao) -> None:
-        self.colecao.remove(cancao)
-    
+        try:
+            self.colecao.remove(cancao)
+        except: pass
+
     def add_playlist(self, playlist: Playlist) -> None:
         self.playlists.append(playlist)
     
     def rem_playlist(self, playlist: Playlist) -> None:
-        self.playlists.remove(playlist)
-    
+        try:
+            self.playlists.remove(playlist)
+        except: pass
+        
     def asdict(self) -> None:
         return {
             "nome": self.nome,

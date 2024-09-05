@@ -15,7 +15,9 @@ class Album(Entidade):
         self.artistas.append(cancao)
     
     def rem_cancao(self, cancao: Cancao) -> None:
-        self.artistas.remove(cancao)
+        try:
+            self.artistas.remove(cancao)
+        except: pass
     
     def asdict(self) -> None:
         return {

@@ -15,13 +15,17 @@ class Artista(Entidade):
         self.albuns.append(album)
     
     def rem_album(self, album: Album) -> None:
-        self.albuns.remove(album)
+        try:
+            self.albuns.remove(album)
+        except: pass
 
     def add_single(self, cancao: Cancao) -> None:
         self.singles.append(cancao)
     
     def rem_single(self, cancao: Cancao) -> None:
-        self.albuns.remove(cancao)
+        try:
+            self.albuns.remove(cancao)
+        except: pass
     
     def asdict(self) -> None:
         return {
