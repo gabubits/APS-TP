@@ -68,7 +68,7 @@ class TelaArtistas(QWidget):
         )
         self.lista.setFont(fontes["lista"])
         self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        for cancao in self.usuario.cancoes:
+        for cancao in self.usuario.colecao:
             self.controle.tipo_controle = ArtistaControle()
             artista = self.controle.pesquisar("nome", str(cancao.artista))[0]
             itemlist = ArtistaItemList(artista)
@@ -120,7 +120,7 @@ class TelaArtistas(QWidget):
     def pesquisar_artista(self, texto: str):
         self.lista.clear()
 
-        for cancao in self.usuario.cancoes:
+        for cancao in self.usuario.colecao:
             self.controle.tipo_controle = ArtistaControle()
             artista = self.controle.pesquisar("nome", str(cancao.artista))[0]
             itemlist = ArtistaItemList(artista)

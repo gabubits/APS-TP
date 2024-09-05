@@ -69,7 +69,7 @@ class TelaAlbuns(QWidget):
         )
         self.lista.setFont(fontes["lista"])
         self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        for cancao in self.usuario.cancoes:
+        for cancao in self.usuario.colecao:
             self.controle.tipo_controle = AlbumControle()
             album = self.controle.pesquisar("id", str(cancao.album))[0]
             itemlist = AlbumItemList(album)
