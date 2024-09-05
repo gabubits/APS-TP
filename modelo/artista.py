@@ -29,6 +29,7 @@ class Artista(Entidade):
     
     def asdict(self) -> None:
         return {
+            "id": self.id,
             "nome": self.nome,
             "nacionalidade": self.nacionalidade,
             "albuns": [album.id for album in self.albuns],

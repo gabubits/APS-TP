@@ -31,6 +31,7 @@ class Usuario(Entidade):
         
     def asdict(self) -> None:
         return {
+            "id": self.id,
             "nome": self.nome,
             "nome_de_usuario": self.nome_de_usuario,
             "senha": self.senha,

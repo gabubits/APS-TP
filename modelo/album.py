@@ -21,6 +21,7 @@ class Album(Entidade):
     
     def asdict(self) -> None:
         return {
+            "id": self.id,
             "titulo": self.titulo,
             "img_capa": self.img_capa,
             "tipo": self.tipo,

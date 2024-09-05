@@ -20,6 +20,7 @@ class Playlist(Entidade):
     
     def asdict(self) -> None:
         return {
+            "id": self.id,
             "nome": self.nome,
             "descricao": self.descricao,
             "img_capa": self.img_capa,
