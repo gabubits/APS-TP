@@ -21,9 +21,9 @@ from controle.cancao_controle import CancaoControle
 from controle.playlist_controle import PlaylistControle
 
 class ArtistaItemList(QListWidgetItem):
-    def __init__(self, artista_id, artista_nome) -> None:
-        super().__init__(artista_nome)
-        self.id = str(artista_id)
+    def __init__(self, artista: Artista) -> None:
+        super().__init__(artista.nome)
+        self.artista = artista
 
 class TelaArtistas(QWidget):
 
@@ -68,12 +68,10 @@ class TelaArtistas(QWidget):
         )
         self.lista.setFont(fontes["lista"])
         self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        for cancao_id in self.usuario.cancoes:
-            self.controle.tipo_controle = CancaoControle()
-            artista_id = self.controle.pesquisar("id", str(cancao_id))[0].artistas[0]
+        for cancao in self.usuario.cancoes:
             self.controle.tipo_controle = ArtistaControle()
-            artista_nome = self.controle.pesquisar("id", str(artista_id))[0].nome
-            itemlist = ArtistaItemList(artista_id, artista_nome)
+            artista = self.controle.pesquisar("nome", str(cancao.artista))[0]
+            itemlist = ArtistaItemList(artista)
             if not self.lista.findItems(itemlist.text(), Qt.MatchFlag.MatchExactly):
                 self.lista.addItem(itemlist)
         self.lista.installEventFilter(self)
@@ -103,12 +101,14 @@ class TelaArtistas(QWidget):
                 )
             )
         
-        self.controle.tipo_controle = CancaoControle()
-        self.usuario.cancoes = [cancao_id for cancao_id in self.usuario.cancoes if self.controle.pesquisar("id", str(cancao_id))[0].artistas[0] != art_rem.id]
-        self.controle.tipo_controle = PlaylistControle()
-        for playlist_id in self.usuario.playlists:
-            playlist = self.controle.pesquisar("id", str(playlist_id))[0]
-            playlist.cancoes = [cancao_id for cancao_id in playlist.cancoes if cancao_id not in self.usuario.cancoes]
+        for i in range(len(self.usuario.colecao)):
+            if self.usuario.colecao[i].artista == art_rem.artista.nome:
+                self.usuario.rem_cancao(self.usuario.colecao[i])
+
+        for playlist in self.usuario.playlists:
+            for i in range(len(playlist.cancoes)):
+                if playlist.cancoes[i].artista == art_rem.artista.nome:
+                    playlist.rem_cancao(playlist.cancoes[i])
         
         msg_sucesso = QMessageBox(self)
         msg_sucesso.setIcon(QMessageBox.Icon.Information)
@@ -120,12 +120,10 @@ class TelaArtistas(QWidget):
     def pesquisar_artista(self, texto: str):
         self.lista.clear()
 
-        for cancao_id in self.usuario.cancoes:
-            self.controle.tipo_controle = CancaoControle()
-            artista_id = self.controle.pesquisar("id", str(cancao_id))[0].artistas[0]
+        for cancao in self.usuario.cancoes:
             self.controle.tipo_controle = ArtistaControle()
-            artista_nome = self.controle.pesquisar("id", str(artista_id))[0].nome
-            itemlist = ArtistaItemList(artista_id, artista_nome)
+            artista = self.controle.pesquisar("nome", str(cancao.artista))[0]
+            itemlist = ArtistaItemList(artista)
             if not self.lista.findItems(itemlist.text(), Qt.MatchFlag.MatchExactly):
                 self.lista.addItem(itemlist)
         

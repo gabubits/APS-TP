@@ -26,9 +26,9 @@ class QHLine(QFrame):
         self.setLineWidth(3)
 
 class UsuarioItemList(QListWidgetItem):
-    def __init__(self, id, nome, username) -> None:
-        super().__init__(f'{nome} ({username})')
-        self.id = id
+    def __init__(self, usuario: Usuario) -> None:
+        super().__init__(f'{usuario.nome} ({usuario.nome_de_usuario})')
+        self.usuario = usuario
 
 class TelaPerfil(QWidget):
     def __init__(self, parent,
@@ -87,7 +87,7 @@ class TelaPerfil(QWidget):
             self.controle.tipo_controle = UsuarioControle()
             for usuario in self.controle.obter_tudo(): 
                 if self.usuario.id != usuario.id:
-                    self.lista.addItem(UsuarioItemList(usuario.id, usuario.nome, usuario.nome_de_usuario))
+                    self.lista.addItem(UsuarioItemList(usuario))
             self.lista.installEventFilter(self)
 
             layout_pesquisa = QGridLayout()
@@ -116,7 +116,7 @@ class TelaPerfil(QWidget):
             )
         
         self.controle.tipo_controle = UsuarioControle()
-        self.controle.remover(per_rem.id)
+        self.controle.remover(per_rem.usuario)
 
         msg_sucesso = QMessageBox(self)
         msg_sucesso.setIcon(QMessageBox.Icon.Information)
@@ -130,7 +130,7 @@ class TelaPerfil(QWidget):
         self.controle.tipo_controle = UsuarioControle()
         for usuario in self.controle.obter_tudo(): 
             if self.usuario.id != usuario.id:
-                self.lista.addItem(UsuarioItemList(usuario.id, usuario.nome, usuario.nome_de_usuario))
+                self.lista.addItem(UsuarioItemList(usuario))
 
         if len(texto.rstrip()) == 0:
             for index in range(self.lista.count()): 

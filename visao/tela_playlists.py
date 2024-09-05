@@ -18,9 +18,9 @@ from controle.controle_contexto import ControleContexto
 from controle.playlist_controle import PlaylistControle
 
 class PlaylistItemList(QListWidgetItem):
-    def __init__(self, playlist_id, playlist_nome, playlist_descricao) -> None:
-        super().__init__(f'{playlist_nome} - {playlist_descricao}')
-        self.play_id = str(playlist_id)
+    def __init__(self, playlist) -> None:
+        super().__init__(f'{playlist.nome} - {playlist.descricao}')
+        self.playlist = playlist
 
 class TelaPlaylists(QWidget):
     def __init__(self,
@@ -66,9 +66,8 @@ class TelaPlaylists(QWidget):
         self.lista.setFont(fontes["lista"])
         self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
         self.controle.tipo_controle = PlaylistControle()
-        for playlist_id in self.usuario.playlists:
-            playlist = self.controle.pesquisar("id", str(playlist_id))[0]
-            itemlist = PlaylistItemList(playlist_id, playlist.nome, playlist.descricao)
+        for playlist in self.usuario.playlists:
+            itemlist = PlaylistItemList(playlist)
             self.lista.addItem(itemlist)
         self.lista.installEventFilter(self)
 
@@ -97,9 +96,9 @@ class TelaPlaylists(QWidget):
                 )
             )
         
-        self.usuario.rem_playlist(play_rem.play_id)
+        self.usuario.rem_playlist(play_rem.playlist)
         self.controle.tipo_controle = PlaylistControle()
-        self.controle.remover(play_rem.play_id)
+        self.controle.remover(play_rem.playlist)
 
         msg_sucesso = QMessageBox(self)
         msg_sucesso.setIcon(QMessageBox.Icon.Information)
@@ -111,9 +110,8 @@ class TelaPlaylists(QWidget):
     def pesquisar_playlist(self, texto: str):
         self.lista.clear()
         
-        for playlist_id in self.usuario.playlists:
-            playlist = self.controle.pesquisar("id", str(playlist_id))[0]
-            itemlist = PlaylistItemList(playlist_id, playlist.nome, playlist.descricao)
+        for playlist in self.usuario.playlists:
+            itemlist = PlaylistItemList(playlist)
             self.lista.addItem(itemlist)
 
         if len(texto.rstrip()) == 0:
