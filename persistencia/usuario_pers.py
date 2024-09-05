@@ -1,6 +1,8 @@
 from persistencia.dao import DAO
 from modelo.entidade import Entidade
 from modelo.usuario import Usuario
+from persistencia.cancao_pers import CancaoPers
+from persistencia.playlist_pers import PlaylistPers
 from typing import List
 from pathlib import Path
 import os
@@ -16,6 +18,9 @@ class UsuarioPers(DAO):
             self.usuarios = self._instancia.usuarios
 
     def carregar_dados(self) -> None:
+        cp = CancaoPers()
+        pp = PlaylistPers()
+        pp.carregar_dados()
         caminho_bd = Path("bd/usuarios_bd.json").resolve()
         if not caminho_bd.parent.exists():
             os.mkdir(caminho_bd.parent)
@@ -23,12 +28,16 @@ class UsuarioPers(DAO):
             with open(caminho_bd, 'r') as usuarios_bd:
                 dados = json.load(usuarios_bd)
                 for usuario_dict in dados:
-                    self.usuarios.append(Usuario.from_dict(usuario_dict))
+                    colecao = [cp.pesquisar("id", str(id)) for id in usuario_dict["colecao"]]
+                    playlists = [pp.pesquisar("id", str(id)) for id in usuario_dict["playlists"]]
+                    
+                    self.usuarios.append(Usuario.from_dict(usuario_dict, colecao, playlists))
     
     def atualizar_dados(self) -> None:
+        print("***********",self.usuarios[0])
         if self.usuarios:
             with open(Path("bd/usuarios_bd.json").resolve(), 'w') as usuarios_bd:
-                json.dump([asdict(ent) for ent in self.usuarios], usuarios_bd, indent=4)
+                json.dump([ent.asdict() for ent in self.usuarios], usuarios_bd, indent=4)
     
     def inserir(self, objeto: Entidade) -> None:
         if not len(self.usuarios):
@@ -37,9 +46,9 @@ class UsuarioPers(DAO):
             objeto.id = self.usuarios[-1].id + 1
         self.usuarios.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for usuario_i in range(len(self.usuarios)):
-            if self.cancoes[usuario_i].id == objeto_id:
+            if self.cancoes[usuario_i].id == objeto.id:
                 del self.cancoes[usuario_i]
                 return
     

@@ -1,5 +1,5 @@
 from modelo.entidade import (dataclass, Entidade)
-from datetime import datetime
+from modelo.cancao import Cancao
 from typing import List, Dict
 from dataclasses import field
 
@@ -8,21 +8,29 @@ class Playlist(Entidade):
     nome: str
     descricao: str
     img_capa: str
-    data_criacao: datetime
-    cancoes: List[int] = field(default_factory=list)
+    cancoes: List[Cancao] = field(default_factory=list)
 
-    def add_cancao(self, cancao_id: int) -> None:
-        self.cancoes.append(cancao_id)
+    def add_cancao(self, cancao: Cancao) -> None:
+        self.cancoes.append(cancao)
     
-    def rem_cancao(self, cancao_id: int) -> None:
-        self.cancoes.remove(cancao_id)
+    def rem_cancao(self, cancao: Cancao) -> None:
+        try:
+            self.cancoes.remove(cancao)
+        except: pass
+    
+    def asdict(self) -> None:
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "descricao": self.descricao,
+            "img_capa": self.img_capa,
+            "cancoes": [cancao.id for cancao in self.colecao]
+        }
     
     @staticmethod
-    def from_dict(playlist_dict: Dict):
+    def from_dict(playlist_dict: Dict, cancoes: List[Cancao]):
         id = playlist_dict["id"]
         nome = playlist_dict["nome"]
         descricao = playlist_dict["descricao"]
         img_capa = playlist_dict["img_capa"]
-        data_criacao = datetime.fromisoformat(playlist_dict["data_criacao"])
-        cancoes = playlist_dict["cancoes"]
-        return Playlist(id, nome, descricao, img_capa, data_criacao, cancoes)
+        return Playlist(id, nome, descricao, img_capa, cancoes)

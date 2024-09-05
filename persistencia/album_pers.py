@@ -1,6 +1,7 @@
 from persistencia.dao import DAO
 from modelo.entidade import Entidade
 from modelo.album import Album
+from persistencia.cancao_pers import CancaoPers
 from typing import List
 from pathlib import Path
 import os
@@ -8,7 +9,7 @@ import json
 from dataclasses import asdict
 
 class AlbumPers(DAO):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__()
         if not getattr(self._instancia, "albuns", None):
             self.albuns: List[Entidade] = []
@@ -16,6 +17,7 @@ class AlbumPers(DAO):
             self.albuns = self._instancia.albuns
 
     def carregar_dados(self) -> None:
+        cp = CancaoPers()
         caminho_bd = Path("bd/albuns_bd.json").resolve()
         if not caminho_bd.parent.exists():
             os.mkdir(caminho_bd.parent)
@@ -23,12 +25,13 @@ class AlbumPers(DAO):
             with open(caminho_bd, 'r') as albuns_bd:
                 dados = json.load(albuns_bd)
                 for album_dict in dados:
-                    self.albuns.append(Album.from_dict(album_dict))
+                    cancoes = [cp.pesquisar("id", str(id))[0] for id in album_dict["cancoes"]]
+                    self.albuns.append(Album.from_dict(album_dict, cancoes))
     
     def atualizar_dados(self) -> None:
         if self.albuns:
             with open(Path("bd/albuns_bd.json").resolve(), 'w') as albuns_bd:
-                json.dump([asdict(ent) for ent in self.albuns], albuns_bd, indent=4)
+                json.dump([ent.asdict() for ent in self.albuns], albuns_bd, indent=4)
     
     def inserir(self, objeto: Entidade) -> None:
         if not len(self.albuns):
@@ -37,9 +40,9 @@ class AlbumPers(DAO):
             objeto.id = self.albuns[-1].id + 1
         self.albuns.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for album_i in range(len(self.albuns)):
-            if self.cancoes[album_i].id == objeto_id:
+            if self.cancoes[album_i].id == objeto.id:
                 del self.cancoes[album_i]
                 return
     

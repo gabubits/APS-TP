@@ -1,5 +1,5 @@
 from modelo.entidade import (dataclass, Entidade)
-from datetime import datetime
+from modelo.cancao import Cancao
 from typing import List, Dict
 from dataclasses import field
 
@@ -7,32 +7,33 @@ from dataclasses import field
 class Album(Entidade):
     titulo: str
     img_capa: str
-    data_lancamento: datetime
-    data_adicao: datetime
     tipo: str
-    artistas: List[int] = field(default_factory=list)
-    cancoes: List[int] = field(default_factory=list)
-
-    def add_artista(self, artista_id: int) -> None:
-        self.artistas.append(artista_id)
+    artista: str
+    cancoes: List[Cancao] = field(default_factory=list)
     
-    def rem_artista(self, artista_id: int) -> None:
-        self.artistas.remove(artista_id)
+    def add_cancao(self, cancao: Cancao) -> None:
+        self.artistas.append(cancao)
     
-    def add_cancao(self, cancao_id: int) -> None:
-        self.artistas.append(cancao_id)
+    def rem_cancao(self, cancao: Cancao) -> None:
+        try:
+            self.artistas.remove(cancao)
+        except: pass
     
-    def rem_cancao(self, cancao_id: int) -> None:
-        self.artistas.remove(cancao_id)
+    def asdict(self) -> None:
+        return {
+            "id": self.id,
+            "titulo": self.titulo,
+            "img_capa": self.img_capa,
+            "tipo": self.tipo,
+            "artista": self.artista,
+            "cancoes": [cancao.id for cancao in self.cancoes]
+        }
     
     @staticmethod
-    def from_dict(album_dict: Dict):
+    def from_dict(album_dict: Dict, cancoes: List[Cancao]):
         id = album_dict["id"]
         titulo = album_dict["titulo"]
         img_capa = album_dict["img_capa"]
-        data_lancamento = datetime.fromisoformat(album_dict["data_lancamento"])
-        data_adicao = datetime.fromisoformat(album_dict["data_adicao"])
         tipo = album_dict["tipo"]
-        artistas = album_dict["artistas"]
-        cancoes = album_dict["cancoes"]
-        return Album(id, titulo, img_capa, data_lancamento, data_adicao, tipo, artistas, cancoes)
+        artista = album_dict["artista"]
+        return Album(id, titulo, img_capa, tipo, artista, cancoes)
