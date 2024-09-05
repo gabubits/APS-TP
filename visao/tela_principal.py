@@ -7,6 +7,7 @@ from .tela_albuns import TelaAlbuns
 from .tela_cancoes import TelaCancoes
 from .tela_perfil import TelaPerfil
 from .tela_playlists import TelaPlaylists
+from.tela_tocando import TelaTocando
 
 from modelo.usuario import Usuario
 #from .tela_editar import TelaEditar
@@ -147,17 +148,12 @@ class TelaPrincipal(TelaBase):
 
         self.pilha_paginas.setCurrentIndex(op_padrao)
         
-        pagina_tocando = QWidget()
-        pagina_tocando.setMinimumSize(tela_largura/4, tela_altura - 90)
-        pagina_tocando.setStyleSheet("background-color: rgb(21,21,21); border-radius: 10px")
-
-        pagina_tocando_layout = QGridLayout(pagina_tocando)
-
-        nowPlayingLabel = QLabel("Tocando agora (tela)")
-        nowPlayingLabel.setWordWrap(True)
-        nowPlayingLabel.setFont(self.fonte_rotulo)
-
-        pagina_tocando_layout.addWidget(nowPlayingLabel, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        pagina_tocando = TelaTocando(
+            {"entrada": self.fonte_entrada,
+             "botao": self.fonte_botao,
+             "rotulo": self.fonte_rotulo},
+             tela_largura, tela_altura
+        )
 
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignHCenter)
         self.widget_central_layout.addWidget(self.pilha_paginas, 1, 0)
