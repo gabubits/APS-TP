@@ -18,8 +18,8 @@ class ControleContexto:
     def inserir(self, objeto: Entidade) -> None:
         return self.tipo_controle.persistencia.inserir(objeto)
     
-    def remover(self, objeto_id: int) -> None:
-        return self.tipo_controle.persistencia.remover(objeto_id)
+    def remover(self, objeto: Entidade) -> None:
+        return self.tipo_controle.persistencia.remover(objeto)
     
     def pesquisar(self, atributo: str, valor: str) -> List[Entidade]:
         return self.tipo_controle.persistencia.pesquisar(atributo, valor)
