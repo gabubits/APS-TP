@@ -85,6 +85,8 @@ class TelaPlaylists(QWidget):
         """Carrega todas as playlists na lista."""
         self.lista.clear()
         for play in self.usuario.playlists:
+            if play == None:
+                return
             itemlist = PlaylistItemList(play)
             self.lista.addItem(itemlist)
 
