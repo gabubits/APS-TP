@@ -1,10 +1,14 @@
 [
     {
+        "id": 0,
         "nome": "gab",
         "nome_de_usuario": "gab",
         "senha": "gab",
         "img_perfil": "/home/gabriel/Desktop/apstp3/APS-TP/visao/imgs/usuario_padrao.jpg",
         "colecao": [],
-        "playlists": []
+        "playlists": [
+            0,
+            1
+        ]
     }
 ]

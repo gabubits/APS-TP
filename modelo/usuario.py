@@ -47,5 +47,6 @@ class Usuario(Entidade):
         senha = usuario_dict["senha"]
         nome = usuario_dict["nome"]
         img_perfil = usuario_dict["img_perfil"]
+        playlists = playlists
 
         return Usuario(id, nome_de_usuario, senha, nome, img_perfil, colecao, playlists)

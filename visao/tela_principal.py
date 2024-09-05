@@ -147,14 +147,14 @@ class TelaPrincipal(TelaBase):
         self.botao_artistas.clicked.connect(lambda: self.changePage(pagina_artistas))
 
         self.pilha_paginas.setCurrentIndex(op_padrao)
-        
+         
         pagina_tocando = TelaTocando(
             {"entrada": self.fonte_entrada,
              "botao": self.fonte_botao,
              "rotulo": self.fonte_rotulo},
              tela_largura, tela_altura
         )
-
+        
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignHCenter)
         self.widget_central_layout.addWidget(self.pilha_paginas, 1, 0)
         self.widget_central_layout.addWidget(pagina_tocando, 1, 1)
