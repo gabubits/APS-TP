@@ -40,9 +40,9 @@ class PlaylistPers(DAO):
             objeto.id = self.playlists[-1].id + 1
         self.playlists.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for playlist_i in range(len(self.playlists)):
-            if self.cancoes[playlist_i].id == objeto_id:
+            if self.cancoes[playlist_i].id == objeto.id:
                 del self.cancoes[playlist_i]
                 return
     

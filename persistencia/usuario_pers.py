@@ -43,9 +43,9 @@ class UsuarioPers(DAO):
             objeto.id = self.usuarios[-1].id + 1
         self.usuarios.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for usuario_i in range(len(self.usuarios)):
-            if self.cancoes[usuario_i].id == objeto_id:
+            if self.cancoes[usuario_i].id == objeto.id:
                 del self.cancoes[usuario_i]
                 return
     

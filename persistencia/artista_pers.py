@@ -43,9 +43,9 @@ class ArtistaPers(DAO):
             objeto.id = self.artistas[-1].id + 1
         self.artistas.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for artista_i in range(len(self.artistas)):
-            if self.cancoes[artista_i].id == objeto_id:
+            if self.cancoes[artista_i].id == objeto.id:
                 del self.cancoes[artista_i]
                 return
     

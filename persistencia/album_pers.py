@@ -40,9 +40,9 @@ class AlbumPers(DAO):
             objeto.id = self.albuns[-1].id + 1
         self.albuns.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for album_i in range(len(self.albuns)):
-            if self.cancoes[album_i].id == objeto_id:
+            if self.cancoes[album_i].id == objeto.id:
                 del self.cancoes[album_i]
                 return
     

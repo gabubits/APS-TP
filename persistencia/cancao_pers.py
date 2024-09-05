@@ -37,9 +37,9 @@ class CancaoPers(DAO):
             objeto.id = self.cancoes[-1].id + 1
         self.cancoes.append(objeto)
     
-    def remover(self, objeto_id: int) -> None:
+    def remover(self, objeto: Entidade) -> None:
         for cancao_i in range(len(self.cancoes)):
-            if self.cancoes[cancao_i].id == objeto_id:
+            if self.cancoes[cancao_i].id == objeto.id:
                 del self.cancoes[cancao_i]
                 return
     
