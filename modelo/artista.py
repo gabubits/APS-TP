@@ -23,6 +23,14 @@ class Artista(Entidade):
     def rem_single(self, cancao: Cancao) -> None:
         self.albuns.remove(cancao)
     
+    def asdict(self) -> None:
+        return {
+            "nome": self.nome,
+            "nacionalidade": self.nacionalidade,
+            "albuns": [album.id for album in self.albuns],
+            "singles": [single.id for single in self.singles]
+        }
+    
     @staticmethod
     def from_dict(artista_dict: Dict, albuns: List[Album], singles: List[Cancao]):
         id = artista_dict["id"]

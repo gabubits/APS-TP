@@ -17,6 +17,15 @@ class Album(Entidade):
     def rem_cancao(self, cancao: Cancao) -> None:
         self.artistas.remove(cancao)
     
+    def asdict(self) -> None:
+        return {
+            "titulo": self.titulo,
+            "img_capa": self.img_capa,
+            "tipo": self.tipo,
+            "artista": self.artista,
+            "cancoes": [cancao.id for cancao in self.cancoes]
+        }
+    
     @staticmethod
     def from_dict(album_dict: Dict, cancoes: List[Cancao]):
         id = album_dict["id"]

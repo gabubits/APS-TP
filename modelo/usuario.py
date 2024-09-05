@@ -24,6 +24,16 @@ class Usuario(Entidade):
     
     def rem_playlist(self, playlist: Playlist) -> None:
         self.playlists.remove(playlist)
+    
+    def asdict(self) -> None:
+        return {
+            "nome": self.nome,
+            "nome_de_usuario": self.nome_de_usuario,
+            "senha": self.senha,
+            "img_perfil": self.img_perfil,
+            "colecao": [cancao.id for cancao in self.colecao],
+            "playlists": [playlist.id for playlist in self.playlists]
+        }
 
     @staticmethod
     def from_dict(usuario_dict: Dict, colecao: List[Cancao], playlists: List[Playlist]):
