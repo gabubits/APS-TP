@@ -1,6 +1,8 @@
 from persistencia.dao import DAO
 from modelo.entidade import Entidade
 from modelo.usuario import Usuario
+from persistencia.cancao_pers import CancaoPers
+from persistencia.playlist_pers import PlaylistPers
 from typing import List
 from pathlib import Path
 import os
@@ -16,6 +18,8 @@ class UsuarioPers(DAO):
             self.usuarios = self._instancia.usuarios
 
     def carregar_dados(self) -> None:
+        cp = CancaoPers()
+        pp = PlaylistPers()
         caminho_bd = Path("bd/usuarios_bd.json").resolve()
         if not caminho_bd.parent.exists():
             os.mkdir(caminho_bd.parent)
@@ -23,12 +27,14 @@ class UsuarioPers(DAO):
             with open(caminho_bd, 'r') as usuarios_bd:
                 dados = json.load(usuarios_bd)
                 for usuario_dict in dados:
-                    self.usuarios.append(Usuario.from_dict(usuario_dict))
+                    colecao = [cp.pesquisar("id", str(id))[0] for id in usuario_dict["colecao"]]
+                    playlists = [pp.pesquisar("id", str(id))[0] for id in usuario_dict["playlists"]]
+                    self.usuarios.append(Usuario.from_dict(usuario_dict, colecao, playlists))
     
     def atualizar_dados(self) -> None:
         if self.usuarios:
             with open(Path("bd/usuarios_bd.json").resolve(), 'w') as usuarios_bd:
-                json.dump([asdict(ent) for ent in self.usuarios], usuarios_bd, indent=4)
+                json.dump([ent.asdict() for ent in self.usuarios], usuarios_bd, indent=4)
     
     def inserir(self, objeto: Entidade) -> None:
         if not len(self.usuarios):

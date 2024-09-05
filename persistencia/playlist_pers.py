@@ -1,6 +1,7 @@
 from persistencia.dao import DAO
 from modelo.entidade import Entidade
 from modelo.playlist import Playlist
+from persistencia.cancao_pers import CancaoPers
 from typing import List
 from pathlib import Path
 import os
@@ -16,6 +17,7 @@ class PlaylistPers(DAO):
             self.playlists = self._instancia.playlists
 
     def carregar_dados(self) -> None:
+        cp = CancaoPers()
         caminho_bd = Path("bd/playlists_bd.json").resolve()
         if not caminho_bd.parent.exists():
             os.mkdir(caminho_bd.parent)
@@ -23,12 +25,13 @@ class PlaylistPers(DAO):
             with open(caminho_bd, 'r') as playlists_bd:
                 dados = json.load(playlists_bd)
                 for playlist_dict in dados:
-                    self.playlists.append(Playlist.from_dict(playlist_dict))
+                    cancoes = [cp.pesquisar("id", str(id))[0] for id in playlist_dict["cancoes"]]
+                    self.playlists.append(Playlist.from_dict(playlist_dict, cancoes))
     
     def atualizar_dados(self) -> None:
         if self.playlists:
             with open(Path("bd/playlists_bd.json").resolve(), 'w') as playlists_bd:
-                json.dump([asdict(ent) for ent in self.playlists], playlists_bd, indent=4)
+                json.dump([ent.asdict() for ent in self.playlists], playlists_bd, indent=4)
     
     def inserir(self, objeto: Entidade) -> None:
         if not len(self.playlists):
