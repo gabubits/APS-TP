@@ -10,17 +10,24 @@ from PySide6.QtGui import (
     QFont, QPixmap, QIcon
 )
 
+from modelo.cancao import Cancao
+from controle.controle_contexto import ControleContexto
+from controle.album_controle import AlbumControle
+
 from typing import Dict
 
 class TelaTocando(QWidget):
 
     def __init__(self,
                  fontes: Dict[str, QFont],
+                 controle: ControleContexto,
                  *args) -> None:
         
         super().__init__()
 
         self.setMinimumSize(args[0]/4, args[1] - 90)
+        self.estado_botao_play = 1
+        self.controle = controle
 
         layout = QGridLayout(self)
 
@@ -54,6 +61,7 @@ class TelaTocando(QWidget):
         self.botao_tocar.setFixedSize(100,35)
         self.botao_tocar.setFont(fontes["botao"])
         self.botao_tocar.setStyleSheet("background-color: rgba(255,255,255,0.9); color: black; border-radius: 15px;")
+        self.botao_tocar.clicked.connect(self.clique_play)
 
         self.botao_anterior = QPushButton()
         self.botao_anterior.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -75,13 +83,6 @@ class TelaTocando(QWidget):
         self.botao_proximo.setFont(fontes["botao"])
         self.botao_proximo.setStyleSheet("background-color: rgba(255,255,255,0.9); color: black; border-radius: 15px;")
 
-        self.slider = QSlider(Qt.Orientation.Horizontal)
-        self.slider.setFixedSize(100, 20)
-        """QSlider::groove::horizontal{
-            border: 1px solid #999999;
-            height: 2px;}\nQSlider::handle::horizontal{
-            background: #2a2a2a; width: 10px; margin: -5px -1px; border-radius: 5px; border: 1px solid #2a2a2a;}"""
-
         layout_botoes = QGridLayout()
         layout_botoes.addWidget(self.botao_anterior, 0, 0, Qt.AlignmentFlag.AlignTop)
         layout_botoes.addWidget(self.botao_tocar, 0, 1, Qt.AlignmentFlag.AlignTop)
@@ -89,5 +90,23 @@ class TelaTocando(QWidget):
 
         layout.addLayout(layout_topo, 0, 0, Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.img_capa, 1, 0, Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.slider, 2, 0, Qt.AlignmentFlag.AlignCenter)
-        layout.addLayout(layout_botoes, 3, 0, Qt.AlignmentFlag.AlignCenter)
+        layout.addLayout(layout_botoes, 2, 0, Qt.AlignmentFlag.AlignCenter)
+    
+    def clique_play(self):
+        if not self.estado_botao_play:
+            img_play = QPixmap("visao/imgs/play.png")
+            icon_play = QIcon(img_play)
+            self.botao_tocar.setIcon(icon_play)
+            self.estado_botao_play = 1
+        else:
+            img_pausa = QPixmap("visao/imgs/pausa.png")
+            icon_pausa = QIcon(img_pausa)
+            self.botao_tocar.setIcon(icon_pausa)
+            self.estado_botao_play = 0
+    
+    def tocar_cancao(self, cancao: Cancao):
+        self.titulo.setText(cancao.titulo)
+        self.artista.setText(cancao.artista)
+        self.controle.tipo_controle = AlbumControle()
+        self.img_capa.setPixmap(QPixmap(self.controle.pesquisar("titulo", cancao.album)[0].img_capa))
+        
