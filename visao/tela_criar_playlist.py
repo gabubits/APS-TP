@@ -5,18 +5,22 @@ from modelo.cancao import Cancao
 from modelo.playlist import Playlist
 from .tela_base import *
 
-from .tela_opcoes import TelaOpcoes
+from controle.controle_contexto import ControleContexto
+from controle.playlist_controle import PlaylistControle
 from modelo.usuario import Usuario
 
 class TelaCriarPlaylist(TelaBase):
-    def __init__(self,usuario:Usuario, parent:None, cancoes:List[Cancao]=[]) -> None:
+    def __init__(self,usuario:Usuario, parent: QWidget | None, controle: ControleContexto, cancoes:List[Cancao], func_att_lista_play) -> None:
         super().__init__(parent = parent,
-                         titulo = "[Player]* - Cadastro de playlist",
+                         titulo = "[Player]* - Criação de playlist",
                          tamanho = QSize(600, 750))
-        self.controle = PlaylistControle()
-        self.usuario_controle = UsuarioControle()
+        
+        self.controle = controle
         self.cancoes = cancoes
         self.usuario = usuario
+        self.cancoes = cancoes
+        self.func_att_lista_play = func_att_lista_play
+
         barra_topo = QFrame()
         barra_topo.setMinimumSize(600, 40)
         barra_topo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -117,7 +121,7 @@ class TelaCriarPlaylist(TelaBase):
         self.entrada_foto_capa.setStyleSheet(estilo_caixa_entrada)
         self.entrada_foto_capa.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        botao_enviar_foto_capa = QPushButton("Envie sa foto da capa (.jpg, .png)")
+        botao_enviar_foto_capa = QPushButton("Envie a foto de capa (.jpg, .png)")
         botao_enviar_foto_capa.setStyleSheet(estilo_botao)
         botao_enviar_foto_capa.setFont(self.fonte_botao)
         botao_enviar_foto_capa.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -150,11 +154,8 @@ class TelaCriarPlaylist(TelaBase):
         self.widget_central_layout.setSpacing(0)
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignTop)
         self.widget_central_layout.addLayout(fcl_ajuste, 1, 0, 1, 0, Qt.AlignmentFlag.AlignTop)
-    
-    
         
     def fechar_e_voltar(self):
-        self.usuario_controle.atualizar_dados()
         self.hide()
         self.parentWidget().show()
 
@@ -175,7 +176,7 @@ class TelaCriarPlaylist(TelaBase):
         if emptyInputs:
             MessageBox(
                 self,
-                'Falha na autenticação!',
+                'Falha na criação!',
                 QMessageBox.Icon.Critical,
                 'Os campos obrigatórios não foram preenchidos:',
                 emptyInputs
@@ -199,22 +200,22 @@ class TelaCriarPlaylist(TelaBase):
             descricao= self.entrada_descricao.toPlainText(),
             img_capa= self.entrada_foto_capa.text() if self.entrada_foto_capa.text()
                     else str(pathlib.Path('visao/imgs/playlist_padrao.jpg').resolve()),
-                    cancoes=self.cancoes
+            cancoes=self.cancoes
                     
         )
         
+        self.controle.tipo_controle = PlaylistControle()
         self.controle.inserir(nova_playlist)
-        self.usuario_controle.inserir_playlist(self.usuario,nova_playlist)
+        self.usuario.add_playlist(nova_playlist)
+        self.func_att_lista_play("")
         
         MessageBox(self,
                    'Playlist criada com sucesso!',
                    QMessageBox.Icon.Information,
-                   'Você já pode ouviri sua nova playlist.').exec()
+                   'Você já pode ouvir a sua nova playlist.').exec()
 
         self.fechar_e_voltar()
         
-        
-
     def mousePressEvent(self, event: QMouseEvent) -> None:
         self.oldPos = event.globalPos()
     
@@ -222,18 +223,6 @@ class TelaCriarPlaylist(TelaBase):
         delta = QPoint(event.globalPos() - self.oldPos)
         self.move(self.x() + delta.x(), self.y() + delta.y())
         self.oldPos = event.globalPos()
-    
-    def closeEvent(self, event: QCloseEvent) -> None:
-        self.controle.tipo_controle = UsuarioControle()
-        self.controle.atualizar_dados()
-        self.controle.tipo_controle = AlbumControle()
-        self.controle.atualizar_dados()
-        self.controle.tipo_controle = CancaoControle()
-        self.controle.atualizar_dados()
-        self.controle.tipo_controle = ArtistaControle()
-        self.controle.atualizar_dados()
-        self.controle.tipo_controle = PlaylistControle()
-        self.controle.atualizar_dados()
     
     def keyReleaseEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Return:

@@ -116,7 +116,7 @@ class TelaPrincipal(TelaBase):
              "lista": QFont(self.fonte_principal, 20, QFont.Weight.Normal)},
              usuario,
              self.controle,
-             pagina_tocando.tocar_cancao
+             pagina_tocando.tocar_cancao,
         )
 
         self.pilha_paginas.addWidget(pagina_cancoes)
@@ -144,6 +144,7 @@ class TelaPrincipal(TelaBase):
              pagina_cancoes.exibir_playlist,
              self.pilha_paginas
         )
+        pagina_cancoes.func_att_lista_play = pagina_playlists.pesquisar_playlist
 
         self.pilha_paginas.addWidget(pagina_playlists)
         self.botao_playlists.clicked.connect(lambda: self.changePage(pagina_playlists))

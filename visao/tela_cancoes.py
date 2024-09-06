@@ -21,6 +21,8 @@ from controle.artista_controle import ArtistaControle
 from controle.cancao_controle import CancaoControle
 from controle.playlist_controle import PlaylistControle
 
+from visao.tela_criar_playlist import TelaCriarPlaylist
+
 class CancaoItemList(QListWidgetItem):
     def __init__(self, cancao: Cancao) -> None:
         super().__init__(f'{cancao.titulo} - {cancao.artista} ({cancao.album})')
@@ -38,6 +40,7 @@ class TelaCancoes(QWidget):
         self.controle = controle
         self.usuario = usuario
         self.func_tocar = func_tocar
+        self.func_att_lista_play = None
 
         layout = QGridLayout(self)
 
@@ -92,6 +95,8 @@ class TelaCancoes(QWidget):
             acao_apagar.triggered.connect(self.remover_cancao)
             acao_tocar = menu.addAction("Tocar canção")
             acao_tocar.triggered.connect(self.tocar_cancao)
+            acao_criar_playlist = menu.addAction("Criar playlist")
+            acao_criar_playlist.triggered.connect(self.criar_playlist)
 
             menu.exec_(event.globalPos())
             return True
@@ -141,3 +146,8 @@ class TelaCancoes(QWidget):
         for cancao in playlist.cancoes:
             itemlist = CancaoItemList(cancao)
             self.lista.addItem(itemlist)
+    
+    def criar_playlist(self):
+        cancoes = [item.cancao for item in self.lista.selectedItems()]
+        TelaCriarPlaylist(self.usuario, self, self.controle, cancoes, self.func_att_lista_play).show()
+
