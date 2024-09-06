@@ -10,7 +10,15 @@ class TelaLogin(TelaBase):
                          tamanho = QSize(600, 650))
         
         # Carregamento do banco de dados de usuários
-        self.controle = ControleContexto(UsuarioControle())
+        self.controle = ControleContexto(CancaoControle())
+        self.controle.carregar_dados()
+        self.controle.tipo_controle = PlaylistControle()
+        self.controle.carregar_dados()
+        self.controle.tipo_controle = AlbumControle()
+        self.controle.carregar_dados()
+        self.controle.tipo_controle = ArtistaControle()
+        self.controle.carregar_dados()
+        self.controle.tipo_controle = UsuarioControle()
         self.controle.carregar_dados()
 
         # Todos os componentes da tela são, agora, escritos com self

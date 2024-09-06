@@ -27,31 +27,30 @@ class AlbumPers(DAO):
                 for album_dict in dados:
                     cancoes = [cp.pesquisar("id", str(id))[0] for id in album_dict["cancoes"]]
                     self.albuns.append(Album.from_dict(album_dict, cancoes))
-    
+
     def atualizar_dados(self) -> None:
-        if self.albuns:
-            with open(Path("bd/albuns_bd.json").resolve(), 'w') as albuns_bd:
-                json.dump([ent.asdict() for ent in self.albuns], albuns_bd, indent=4)
-    
+        with open(Path("bd/albuns_bd.json").resolve(), 'w') as albuns_bd:
+            json.dump([ent.asdict() for ent in self.albuns], albuns_bd, indent=4)
+
     def inserir(self, objeto: Entidade) -> None:
         if not len(self.albuns):
             objeto.id = 1
         else:
             objeto.id = self.albuns[-1].id + 1
         self.albuns.append(objeto)
-    
+
     def remover(self, objeto: Entidade) -> None:
         for album_i in range(len(self.albuns)):
-            if self.cancoes[album_i].id == objeto.id:
-                del self.cancoes[album_i]
+            if self.albuns[album_i].id == objeto.id:
+                del self.albuns[album_i]
                 return
-    
+
     def pesquisar(self, atributo: str, valor: str) -> List[Entidade]:
         if atributo == 'id':
             for album in self.albuns:
                 if str(getattr(album, atributo)) == valor:
                     return [album]
-    
+
         return [album for album in self.albuns if valor == str(getattr(album, atributo))]
 
     def obter_tudo(self) -> List[Entidade]:

@@ -2,17 +2,17 @@
     {
         "id": 0,
         "titulo": "365",
-        "artista": "Charli XCX",
         "genero": "Pop",
         "album": "Brat",
-        "diretorio_audio": "/home/gabriel/Music/brat/365.mp3"
+        "diretorio_audio": "/home/gabriel/Music/brat/365.mp3",
+        "artista": "Charli XCX"
     },
     {
         "id": 1,
         "titulo": "360",
-        "artista": "Charli XCX",
         "genero": "Pop",
         "album": "Brat",
-        "diretorio_audio": "/home/gabriel/Music/360.mp3"
+        "diretorio_audio": "/home/gabriel/Music/360.mp3",
+        "artista": "Charli XCX"
     }
 ]

@@ -10,16 +10,16 @@ class Album(Entidade):
     tipo: str
     artista: str
     cancoes: List[Cancao] = field(default_factory=list)
-    
+
     def add_cancao(self, cancao: Cancao) -> None:
-        self.artistas.append(cancao)
-    
+        self.cancoes.append(cancao)
+
     def rem_cancao(self, cancao: Cancao) -> None:
         try:
-            self.artistas.remove(cancao)
+            self.cancoes.remove(cancao)
         except: pass
-    
-    def asdict(self) -> None:
+
+    def asdict(self) -> Dict:
         return {
             "id": self.id,
             "titulo": self.titulo,
@@ -28,7 +28,7 @@ class Album(Entidade):
             "artista": self.artista,
             "cancoes": [cancao.id for cancao in self.cancoes]
         }
-    
+
     @staticmethod
     def from_dict(album_dict: Dict, cancoes: List[Cancao]):
         id = album_dict["id"]

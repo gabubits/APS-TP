@@ -10,12 +10,12 @@ from .tela_playlists import TelaPlaylists
 from.tela_tocando import TelaTocando
 
 from modelo.usuario import Usuario
-#from .tela_editar import TelaEditar
+from .tela_editar import TelaEditar
 
 class TelaPrincipal(TelaBase):
     def __init__(self, parent: QWidget | None, op_padrao: int, controle: ControleContexto, usuario: Usuario) -> None:
-        super().__init__(parent = parent, 
-                         titulo = "[Player]*", 
+        super().__init__(parent = parent,
+                         titulo = "[Player]*",
                          tamanho = QSize(1500, 900))
 
 
@@ -90,6 +90,14 @@ class TelaPrincipal(TelaBase):
 
         self.fonte_rotulo.setPointSize(25)
 
+        pagina_tocando = TelaTocando(
+            {"entrada": self.fonte_entrada,
+             "botao": self.fonte_botao,
+             "rotulo": self.fonte_rotulo},
+             self.controle,
+             tela_largura, tela_altura
+        )
+
         pagina_perfil = TelaPerfil(
             self,
             {"entrada": self.fonte_entrada,
@@ -107,7 +115,8 @@ class TelaPrincipal(TelaBase):
              "botao": self.fonte_botao,
              "lista": QFont(self.fonte_principal, 20, QFont.Weight.Normal)},
              usuario,
-             self.controle
+             self.controle,
+             pagina_tocando.tocar_cancao
         )
 
         self.pilha_paginas.addWidget(pagina_cancoes)
@@ -118,7 +127,9 @@ class TelaPrincipal(TelaBase):
              "botao": self.fonte_botao,
              "lista": QFont(self.fonte_principal, 20, QFont.Weight.Normal)},
              usuario,
-             self.controle
+             self.controle,
+             pagina_cancoes.pesquisar_cancao,
+             self.pilha_paginas
         )
 
         self.pilha_paginas.addWidget(pagina_albuns)
@@ -129,7 +140,9 @@ class TelaPrincipal(TelaBase):
              "botao": self.fonte_botao,
              "lista": QFont(self.fonte_principal, 20, QFont.Weight.Normal)},
              usuario,
-             self.controle
+             self.controle,
+             pagina_cancoes.exibir_playlist,
+             self.pilha_paginas
         )
 
         self.pilha_paginas.addWidget(pagina_playlists)
@@ -140,28 +153,23 @@ class TelaPrincipal(TelaBase):
              "botao": self.fonte_botao,
              "lista": QFont(self.fonte_principal, 20, QFont.Weight.Normal)},
              usuario,
-             self.controle
+             self.controle,
+             pagina_albuns.pesquisar_album,
+             self.pilha_paginas
         )
 
         self.pilha_paginas.addWidget(pagina_artistas)
         self.botao_artistas.clicked.connect(lambda: self.changePage(pagina_artistas))
 
         self.pilha_paginas.setCurrentIndex(op_padrao)
-         
-        pagina_tocando = TelaTocando(
-            {"entrada": self.fonte_entrada,
-             "botao": self.fonte_botao,
-             "rotulo": self.fonte_rotulo},
-             tela_largura, tela_altura
-        )
-        
+
         self.widget_central_layout.addWidget(barra_topo, 0, 0, Qt.AlignmentFlag.AlignHCenter)
         self.widget_central_layout.addWidget(self.pilha_paginas, 1, 0)
         self.widget_central_layout.addWidget(pagina_tocando, 1, 1)
-    
+
     def close(self) -> bool:
         sys.exit()
-    
+
     def changePage(self, page: QWidget):
         if self.pilha_paginas.currentWidget == page: return
         self.pilha_paginas.setCurrentWidget(page)
@@ -179,10 +187,9 @@ class TelaPrincipal(TelaBase):
         self.controle.atualizar_dados()
         self.close()
         self.parentWidget().show()
-    
+
     def adicionar_musica(self):
-        audios_path, _ = QFileDialog.getOpenFileNames(self, "Importe suas músicas", 
+        audios_path, _ = QFileDialog.getOpenFileNames(self, "Importe suas músicas",
                                                   os.getcwd(), "*.mp3")
-        
-        #TelaEditar(self, audios_path, self.controle, self.usuario).show()
-        
+
+        TelaEditar(self, audios_path, self.controle, self.usuario).show()

@@ -15,7 +15,7 @@ class Usuario(Entidade):
 
     def add_cancao(self, cancao: Cancao) -> None:
         self.colecao.append(cancao)
-    
+
     def rem_cancao(self, cancao: Cancao) -> None:
         try:
             self.colecao.remove(cancao)
@@ -23,13 +23,13 @@ class Usuario(Entidade):
 
     def add_playlist(self, playlist: Playlist) -> None:
         self.playlists.append(playlist)
-    
+
     def rem_playlist(self, playlist: Playlist) -> None:
         try:
             self.playlists.remove(playlist)
         except: pass
-        
-    def asdict(self) -> None:
+
+    def asdict(self) -> Dict:
         return {
             "id": self.id,
             "nome": self.nome,
@@ -47,6 +47,5 @@ class Usuario(Entidade):
         senha = usuario_dict["senha"]
         nome = usuario_dict["nome"]
         img_perfil = usuario_dict["img_perfil"]
-        playlists = playlists
 
         return Usuario(id, nome_de_usuario, senha, nome, img_perfil, colecao, playlists)

@@ -30,13 +30,17 @@ class TelaArtistas(QWidget):
     def __init__(self,
                  fontes: Dict[str, QFont],
                  usuario: Usuario,
-                 controle: ControleContexto) -> None:
+                 controle: ControleContexto,
+                 func_pesquisar_album,
+                 pilha_paginas) -> None:
         
         super().__init__()
         layout = QGridLayout(self)
 
         self.controle = controle
         self.usuario = usuario
+        self.func_pesquisar_album = func_pesquisar_album
+        self.pilha_paginas = pilha_paginas
 
         self.caixa_pesquisa = QLineEdit()
         self.caixa_pesquisa.setFixedSize(380, 30)
@@ -89,6 +93,8 @@ class TelaArtistas(QWidget):
             menu = QMenu()
             acao_apagar = menu.addAction("Apagar artista")
             acao_apagar.triggered.connect(self.remover_artista)
+            acao_exibir = menu.addAction("Exibir albuns")
+            acao_exibir.triggered.connect(self.exibir_albuns)
 
             menu.exec_(event.globalPos())
             return True
@@ -136,4 +142,9 @@ class TelaArtistas(QWidget):
             if texto.rstrip() not in item.text(): 
                 item.setHidden(True)
             else: item.setHidden(False)
+    
+    def exibir_albuns(self):
+        art: ArtistaItemList = self.lista.selectedItems()[0]
+        self.func_pesquisar_album(art.artista.nome)
+        self.pilha_paginas.setCurrentIndex(2)
     

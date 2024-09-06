@@ -23,19 +23,21 @@ from controle.playlist_controle import PlaylistControle
 
 class CancaoItemList(QListWidgetItem):
     def __init__(self, cancao: Cancao) -> None:
-        super().__init__(f'{cancao.nome} - {cancao.artista}')
+        super().__init__(f'{cancao.titulo} - {cancao.artista} ({cancao.album})')
         self.cancao = cancao
 
 class TelaCancoes(QWidget):
     def __init__(self,
                  fontes: Dict[str, QFont],
                  usuario: Usuario,
-                 controle: ControleContexto) -> None:
-        
+                 controle: ControleContexto,
+                 func_tocar) -> None:
+
         super().__init__()
 
         self.controle = controle
         self.usuario = usuario
+        self.func_tocar = func_tocar
 
         layout = QGridLayout(self)
 
@@ -68,11 +70,12 @@ class TelaCancoes(QWidget):
             "border: 1px solid grey"
         )
         self.lista.setFont(fontes["lista"])
-        self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
+        self.lista.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
         for cancao in self.usuario.colecao:
             itemlist = CancaoItemList(cancao)
             self.lista.addItem(itemlist)
         self.lista.installEventFilter(self)
+        self.lista.itemDoubleClicked.connect(self.tocar_cancao)
 
         layout_pesquisa = QGridLayout()
         layout_pesquisa.addWidget(self.caixa_pesquisa, 0, 0, Qt.AlignmentFlag.AlignTop)
@@ -81,17 +84,19 @@ class TelaCancoes(QWidget):
         layout.setSpacing(10)
         layout.addLayout(layout_pesquisa, 0, 0, Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.lista, 1, 0)
-    
+
     def eventFilter(self, watched: QObject, event: QEvent):
         if event.type() == QEvent.Type.ContextMenu and watched is self.lista:
             menu = QMenu()
             acao_apagar = menu.addAction("Apagar canção")
             acao_apagar.triggered.connect(self.remover_cancao)
+            acao_tocar = menu.addAction("Tocar canção")
+            acao_tocar.triggered.connect(self.tocar_cancao)
 
             menu.exec_(event.globalPos())
             return True
         return super().eventFilter(watched, event)
-    
+
     def remover_cancao(self):
         can_rem: CancaoItemList = self.lista.takeItem(
             self.lista.row(
@@ -115,13 +120,24 @@ class TelaCancoes(QWidget):
         for cancao in self.usuario.colecao:
             itemlist = CancaoItemList(cancao)
             self.lista.addItem(itemlist)
-            
+
         if len(texto.rstrip()) == 0:
-            for index in range(self.lista.count()): 
+            for index in range(self.lista.count()):
                 self.lista.item(index).setHidden(False)
             return
         for index in range(self.lista.count()):
             item = self.lista.item(index)
-            if texto.rstrip() not in item.text(): 
+            if texto.rstrip() not in item.text():
                 item.setHidden(True)
             else: item.setHidden(False)
+
+    def tocar_cancao(self):
+        can_tocar: CancaoItemList = self.lista.selectedItems()[0]
+        self.func_tocar(can_tocar.cancao)
+        self.lista.clearSelection()
+
+    def exibir_playlist(self, playlist):
+        self.lista.clear()
+        for cancao in playlist.cancoes:
+            itemlist = CancaoItemList(cancao)
+            self.lista.addItem(itemlist)

@@ -13,7 +13,7 @@ class Artista(Entidade):
 
     def add_album(self, album: Album) -> None:
         self.albuns.append(album)
-    
+
     def rem_album(self, album: Album) -> None:
         try:
             self.albuns.remove(album)
@@ -21,13 +21,13 @@ class Artista(Entidade):
 
     def add_single(self, cancao: Cancao) -> None:
         self.singles.append(cancao)
-    
+
     def rem_single(self, cancao: Cancao) -> None:
         try:
-            self.albuns.remove(cancao)
+            self.singles.remove(cancao)
         except: pass
-    
-    def asdict(self) -> None:
+
+    def asdict(self) -> Dict:
         return {
             "id": self.id,
             "nome": self.nome,
@@ -35,7 +35,7 @@ class Artista(Entidade):
             "albuns": [album.id for album in self.albuns],
             "singles": [single.id for single in self.singles]
         }
-    
+
     @staticmethod
     def from_dict(artista_dict: Dict, albuns: List[Album], singles: List[Cancao]):
         id = artista_dict["id"]

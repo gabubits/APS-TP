@@ -4,7 +4,10 @@
         "titulo": "Brat",
         "img_capa": "/home/gabriel/Desktop/apstp3/APS-TP/visao/imgs/album_padrao.jpg",
         "tipo": "LP",
-        "artistas": "Charli XCX",
-        "cancoes": [0, 1]
+        "artista": "Charli XCX",
+        "cancoes": [
+            0,
+            1
+        ]
     }
 ]

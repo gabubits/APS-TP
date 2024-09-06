@@ -11,15 +11,10 @@ from dataclasses import asdict
 class PlaylistPers(DAO):
     def __init__(self) -> None:
         super().__init__()
-
-        self.playlists = []
         if not getattr(self._instancia, "playlists", None):
             self.playlists: List[Entidade] = []
         else:
             self.playlists = self._instancia.playlists
-        
-        self.carregar_dados()
-
 
     def carregar_dados(self) -> None:
         cp = CancaoPers()
@@ -32,30 +27,31 @@ class PlaylistPers(DAO):
                 for playlist_dict in dados:
                     cancoes = [cp.pesquisar("id", str(id))[0] for id in playlist_dict["cancoes"]]
                     self.playlists.append(Playlist.from_dict(playlist_dict, cancoes))
-        
-        return self.playlists
-    
+
     def atualizar_dados(self) -> None:
-        if self.playlists:
-            with open(Path("bd/playlists_bd.json").resolve(), 'w+') as playlists_bd:
-                json.dump([ent.asdict() for ent in self.playlists], playlists_bd, indent=4)
-        
+        with open(Path("bd/playlists_bd.json").resolve(), 'w') as playlists_bd:
+            json.dump([ent.asdict() for ent in self.playlists], playlists_bd, indent=4)
+
     def inserir(self, objeto: Entidade) -> None:
+        if not len(self.playlists):
+            objeto.id = 1
+        else:
+            objeto.id = self.playlists[-1].id + 1
         self.playlists.append(objeto)
-        self.atualizar_dados()
-        return 
-        
-    
+
     def remover(self, objeto: Entidade) -> None:
-        self.playlists.remove(objeto)
-        self.atualizar_dados()
-        
-    
-    def pesquisar(self, atributo: str, valor: str):
-        for playlist in self.playlists:
-            if str(getattr(playlist, atributo)) == valor:
-                return playlist
-        
-        return None
+        for playlist_i in range(len(self.playlists)):
+            if self.playlists[playlist_i].id == objeto.id:
+                del self.playlists[playlist_i]
+                return
+
+    def pesquisar(self, atributo: str, valor: str) -> List[Entidade]:
+        if atributo == 'id':
+            for playlist in self.playlists:
+                if str(getattr(playlist, atributo)) == valor:
+                    return [playlist]
+
+        return [playlist for playlist in self.playlists if valor == str(getattr(playlist, atributo))]
+
     def obter_tudo(self) -> List[Entidade]:
         return self.playlists

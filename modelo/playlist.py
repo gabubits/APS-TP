@@ -12,21 +12,21 @@ class Playlist(Entidade):
 
     def add_cancao(self, cancao: Cancao) -> None:
         self.cancoes.append(cancao)
-    
+
     def rem_cancao(self, cancao: Cancao) -> None:
         try:
             self.cancoes.remove(cancao)
         except: pass
-    
-    def asdict(self) -> None:
+
+    def asdict(self) -> Dict:
         return {
             "id": self.id,
             "nome": self.nome,
             "descricao": self.descricao,
             "img_capa": self.img_capa,
-            "cancoes": [cancao.id for cancao in self.colecao]
+            "cancoes": [cancao.id for cancao in self.cancoes]
         }
-    
+
     @staticmethod
     def from_dict(playlist_dict: Dict, cancoes: List[Cancao]):
         id = playlist_dict["id"]

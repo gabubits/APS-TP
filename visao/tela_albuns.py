@@ -23,19 +23,23 @@ from controle.playlist_controle import PlaylistControle
 
 class AlbumItemList(QListWidgetItem):
     def __init__(self, album: Album) -> None:
-        super().__init__(f'{album.ttulo} - {album.artista}')
+        super().__init__(f'{album.titulo} - {album.artista}')
         self.album = album
 
 class TelaAlbuns(QWidget):
     def __init__(self,
                  fontes: Dict[str, QFont],
                  usuario: Usuario,
-                 controle: ControleContexto) -> None:
+                 controle: ControleContexto,
+                 func_pesquisar_cancao,
+                 pilha_paginas) -> None:
         
         super().__init__()
 
         self.controle = controle
         self.usuario = usuario
+        self.func_pesquisar_cancao = func_pesquisar_cancao
+        self.pilha_paginas = pilha_paginas
 
         layout = QGridLayout(self)
 
@@ -71,7 +75,7 @@ class TelaAlbuns(QWidget):
         self.lista.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
         for cancao in self.usuario.colecao:
             self.controle.tipo_controle = AlbumControle()
-            album = self.controle.pesquisar("id", str(cancao.album))[0]
+            album = self.controle.pesquisar("titulo", str(cancao.album))[0]
             itemlist = AlbumItemList(album)
             if not self.lista.findItems(itemlist.text(), Qt.MatchFlag.MatchExactly):
                 self.lista.addItem(itemlist)
@@ -90,6 +94,8 @@ class TelaAlbuns(QWidget):
             menu = QMenu()
             acao_apagar = menu.addAction("Apagar álbum")
             acao_apagar.triggered.connect(self.remover_album)
+            acao_exibir = menu.addAction("Exibir canções")
+            acao_exibir.triggered.connect(self.exibir_cancoes)
 
             menu.exec_(event.globalPos())
             return True
@@ -121,9 +127,9 @@ class TelaAlbuns(QWidget):
     def pesquisar_album(self, texto: str):
         self.lista.clear()
         
-        for cancao in self.usuario.cancoes:
+        for cancao in self.usuario.colecao:
             self.controle.tipo_controle = AlbumControle()
-            album = self.controle.pesquisar("id", str(cancao.album))[0]
+            album = self.controle.pesquisar("titulo", str(cancao.album))[0]
             itemlist = AlbumItemList(album)
             if not self.lista.findItems(itemlist.text(), Qt.MatchFlag.MatchExactly):
                 self.lista.addItem(itemlist)
@@ -137,3 +143,8 @@ class TelaAlbuns(QWidget):
             if texto.rstrip() not in item.text(): 
                 item.setHidden(True)
             else: item.setHidden(False)
+    
+    def exibir_cancoes(self):
+        alb: AlbumItemList = self.lista.selectedItems()[0]
+        self.func_pesquisar_cancao(alb.album.titulo)
+        self.pilha_paginas.setCurrentIndex(1)

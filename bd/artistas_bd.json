@@ -3,7 +3,9 @@
         "id": 0,
         "nome": "Charli XCX",
         "nacionalidade": "Inglesa",
-        "albuns": [0],
+        "albuns": [
+            0
+        ],
         "singles": []
     }
 ]
